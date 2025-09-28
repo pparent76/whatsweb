@@ -1,0 +1,16 @@
+{
+    "name": "alefnode.whatsweb",
+    "description": "WhatsApp client with Responsive Design.",
+    "architecture": "@CLICK_ARCH@",
+    "title": "whatsweb",
+    "hooks": {
+        "whatsweb": {
+            "apparmor": "whatsweb.apparmor",
+            "desktop":  "whatsweb.desktop",
+            "content-hub": "content-hub.json"
+        }
+    },
+    "version": "0.2.8",
+    "maintainer": "Adrian Campos <adriancampos@teachelp.com>",
+    "framework" : "@CLICK_FRAMEWORK@"
+}

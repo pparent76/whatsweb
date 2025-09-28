@@ -1,0 +1,14 @@
+[Desktop Entry]
+Name=WhatsWeb
+Comment=Whatsapp with Responsive
+Exec=bin/whatsweb %U
+Terminal=false
+Type=Application
+Icon=icon.png
+X-Ubuntu-Touch=true
+X-Lomiri-Touch=true
+
+X-Ubuntu-Splash-Color=#ffffff
+X-Ubuntu-Splash-Image=icon-splash.png
+
+Name[en_US]=WhatsWeb
