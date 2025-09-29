@@ -9,6 +9,20 @@ import QtSystemInfo 5.5
 import Ubuntu.Components.ListItems 1.3 as ListItemm
 import Ubuntu.Content 1.3
 
+// !!!!! The following breaks the app
+
+// import Lomiri.PushNotifications 0.1
+// 
+// PushClient {
+//         id: pushClient
+//         appId: "alefnode.whatsweb_whatsweb"
+//         onTokenChanged: console.log("Got push token: ", token)
+//         onError: {
+//           console.warn("👹 Error with pushclient:", error)
+//         }
+//     }
+// 
+
 
 MainView {
   id: mainView
