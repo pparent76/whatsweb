@@ -33,7 +33,7 @@ MainView {
   }
 
 
-  //anchorToKeyboard: true
+  anchorToKeyboard: true
 
 
   property list<ContentItem> importItems
