@@ -11,6 +11,10 @@
             "content-hub": "content-hub.json"
         }
     },
+    "push": {
+        "apparmor": "push-apparmor.json",
+        "push-helper": "push.json"
+    },
     "version": "0.2.8",
     "maintainer": "Adrian Campos <adriancampos@teachelp.com>",
     "framework" : "ubuntu-sdk-20.04"

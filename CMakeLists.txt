@@ -40,7 +40,7 @@ target_link_libraries(${PROJECT_NAME} PRIVATE
     Qt5::Gui
     Qt5::Qml
     Qt5::Quick
-    Qt5::DBus    
+    Qt5::DBus 
     ${LIBNOTIFY_LIBRARIES}
     ${GLIB2_LIBRARIES}
 )
@@ -56,3 +56,6 @@ install(FILES content-hub.json DESTINATION ${CMAKE_INSTALL_PREFIX})
 install(FILES icon.png DESTINATION ${CMAKE_INSTALL_PREFIX})
 install(FILES icon-splash.png DESTINATION ${CMAKE_INSTALL_PREFIX})
 install(FILES manifest.json DESTINATION ${CMAKE_INSTALL_PREFIX})
+install(FILES push.json DESTINATION ${CMAKE_INSTALL_PREFIX})
+install(FILES push-apparmor.json DESTINATION ${CMAKE_INSTALL_PREFIX})
+install(FILES pushexec DESTINATION ${CMAKE_INSTALL_PREFIX})
