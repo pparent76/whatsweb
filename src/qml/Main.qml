@@ -24,17 +24,17 @@ MainView {
   backgroundColor : "transparent"
   anchors {
     fill: parent
-    bottomMargin: UbuntuApplication.inputMethod.visible ? UbuntuApplication.inputMethod.keyboardRectangle.height/(units.gridUnit / 8) : 0
-    Behavior on bottomMargin {
-        NumberAnimation {
-            duration: 175
-            easing.type: Easing.OutQuad
-        }
-    }
+    bottomMargin: UbuntuApplication.inputMethod.visible ? UbuntuApplication.inputMethod.keyboardRectangle.height : 0
+    // Behavior on bottomMargin {
+    //     NumberAnimation {
+    //         duration: 175
+    //         easing.type: Easing.OutQuad
+    //     }
+    // }
   }
 
 
-  anchorToKeyboard: true
+ // anchorToKeyboard: true
 
 
   property list<ContentItem> importItems
