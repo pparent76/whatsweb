@@ -8,32 +8,19 @@
 #include <QFile>
 #include <QTextStream>
 #include <QThread>
-
-#include "pushclient.h"
-#include "NotificationHelper.h"
 #include <QDBusInterface>
 #include <QDBusReply>
 #include <QDBusConnectionInterface>
-
 #include <QQuickView>
 #include <QQmlContext>
 #include <QScreen>
 
-void vibrate(int ms) {
-    QDBusInterface iface("com.lomiri.Vibrator",
-                         "/com/lomiri/Vibrator",
-                         "com.lomiri.Vibrator",
-                         QDBusConnection::systemBus());
+#include "NotificationHelper.h"
 
-    if (iface.isValid()) {
-        iface.call("Vibrate", ms);
-    }
-}
 
 int main(int argc, char *argv[])
 {
 
-vibrate(3000);
 QObject test;
 NotificationHelper notifiyer(&test);
 QCoreApplication::setOrganizationName("alefnode");

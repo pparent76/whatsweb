@@ -12,6 +12,7 @@ import Ubuntu.Content 1.3
 
 MainView {
   id: mainView
+  property int lastUnreadCount: -1;
 
   ScreenSaver {
     id: screenSaver
@@ -66,7 +67,9 @@ MainView {
           fill:parent
           centerIn: parent.verticalCenter
         }
-       url: "https://web.whatsapp.com"
+        url: "https://web.whatsapp.com"
+      // url: "https://www.bennish.net/web-notifications.html"
+      // url: "https://librecalc.fr/test3.html"
         userScripts: [
           WebEngineScript {
             injectionPoint: WebEngineScript.DocumentCreation
@@ -107,6 +110,18 @@ MainView {
                     })();
                 `);
             }
+        }
+        onTitleChanged: {
+             // 1a. look for a number inside parentheses at start or end
+            var match = title.match(/^\s*\((\d+)\)/);
+            var unread = -1;
+            if (match && match.length > 1) {
+                unread = parseInt(match[1]);
+            }
+            if (unread>lastUnreadCount)
+              notifier.showNotificationMessage(unread+" whatsapp message unread")
+            if (unread != -1 )
+              lastUnreadCount=unread
         }
         onJavaScriptConsoleMessage: function(level, message, line, sourceId) {
             if (message.startsWith("[MyNotifDebug]")) {

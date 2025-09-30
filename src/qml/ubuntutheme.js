@@ -254,3 +254,137 @@ function clean() {
       console.log('Service Worker registration failed: ', err);
   });
 }
+
+
+
+
+
+
+//Injection AUdio testid
+
+(function() {
+  if (window.__my_audio_hook_installed) return;
+  window.__my_audio_hook_installed = true;
+
+  function logAudioEvent(info) {
+    try {
+      console.log("[MyNotifDebug] " + info);
+    } catch (e) { /* safe */ }
+  }
+
+  // 1) Intercepter constructeur Audio (alias de HTMLAudioElement)
+  try {
+    const OrigAudio = window.Audio;
+    window.Audio = function(src) {
+      const a = new OrigAudio(src);
+      try {
+        // log creation + src
+       // logAudioEvent("Audio constructed src=" + (src || ""));
+      } catch(e){}
+      // attach listeners to catch play
+      a.addEventListener('play', function(){ logAudioEvent("Audio.play event src=" + (a.currentSrc || a.src || "")); }, {passive:true});
+      a.addEventListener('playing', function(){ logAudioEvent("Audio.playing src=" + (a.currentSrc || a.src || "")); }, {passive:true});
+      return a;
+    };
+    // preserve prototype / static props
+    window.Audio.prototype = OrigAudio.prototype;
+    Object.getOwnPropertyNames(OrigAudio).forEach(function(k){
+      try { if (!(k in window.Audio)) window.Audio[k] = OrigAudio[k]; } catch(e){}
+    });
+  } catch(e) {}
+
+  // 2) Intercepter HTMLAudioElement / HTMLMediaElement.play
+  try {
+    const mp = HTMLMediaElement && HTMLMediaElement.prototype;
+    if (mp && !mp.__play_hooked__) {
+      const origPlay = mp.play;
+      mp.__play_hooked__ = true;
+      mp.play = function() {
+        try {
+          const src = this.currentSrc || this.src || "";
+          logAudioEvent("HTMLMediaElement.play src=" + src);
+        } catch(e){}
+        return origPlay.apply(this, arguments);
+      };
+      // also listen to src changes (attribute)
+      const origSetAttribute = Element.prototype.setAttribute;
+      Element.prototype.setAttribute = function(name, value) {
+        try {
+          if ((this.tagName || "").toLowerCase() === "audio" && name === "src") {
+            logAudioEvent("audio.setAttribute src=" + value);
+          }
+        } catch(e){}
+        return origSetAttribute.apply(this, arguments);
+      };
+      // intercept setting .src
+      try {
+        const desc = Object.getOwnPropertyDescriptor(HTMLMediaElement.prototype, 'src');
+        if (desc && desc.set && !desc.set.__hooked__) {
+          const origSetter = desc.set;
+          desc.set = function(v) {
+            try { logAudioEvent("audio.src_set to=" + v); } catch(e){}
+            return origSetter.call(this, v);
+          };
+          Object.defineProperty(HTMLMediaElement.prototype, 'src', desc);
+          desc.set.__hooked__ = true;
+        }
+      } catch(e){}
+    }
+  } catch(e){}
+
+  // 3) Intercepter WebAudio: AudioContext.prototype.createBufferSource + start()
+  try {
+    const AC = window.AudioContext || window.webkitAudioContext;
+    if (AC) {
+      const origCreate = AC.prototype.createBufferSource;
+      AC.prototype.createBufferSource = function() {
+        const srcNode = origCreate.apply(this, arguments);
+        try {
+          const origStart = srcNode.start;
+          srcNode.start = function(/*when, offset, duration*/) {
+            try {
+              // attempt to describe the buffer (duration) or associated info
+              const dur = srcNode.buffer ? srcNode.buffer.duration : "unknown";
+              logAudioEvent("WebAudio start bufferDuration=" + dur);
+            } catch(e){}
+            return origStart.apply(this, arguments);
+          };
+        } catch(e){}
+        return srcNode;
+      };
+    }
+  } catch(e){}
+
+  // 4) MutationObserver to catch dynamically added <audio> elements
+  try {
+    const mo = new MutationObserver(function(mutations) {
+      for (const m of mutations) {
+        for (const n of m.addedNodes || []) {
+          try {
+            if (n && n.tagName && n.tagName.toLowerCase() === 'audio') {
+              const a = n;
+              logAudioEvent("audio element added to DOM src=" + (a.currentSrc || a.src || ""));
+              a.addEventListener('play', function(){ logAudioEvent("DOM audio.play src=" + (a.currentSrc||a.src||"")); }, {passive:true});
+            }
+          } catch(e){}
+        }
+      }
+    });
+    mo.observe(document, { childList: true, subtree: true });
+  } catch(e){}
+
+  // 5) Optional: intercept creation via createElement
+  try {
+    const origCreate = Document.prototype.createElement;
+    Document.prototype.createElement = function(tagName) {
+      const node = origCreate.apply(this, arguments);
+      try {
+        if ((tagName||"").toLowerCase() === 'audio') {
+          logAudioEvent("document.createElement('audio')");
+          node.addEventListener('play', function(){ logAudioEvent("created audio.play src=" + (node.currentSrc||node.src||"")); }, {passive:true});
+        }
+      } catch(e){}
+      return node;
+    };
+  } catch(e){}
+})();
