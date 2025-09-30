@@ -268,7 +268,7 @@ function clean() {
 
   function logAudioEvent(info) {
     try {
-      console.log("[MyNotifDebug] " + info);
+      console.log("[MyNotifDebugAudio] " + info);
     } catch (e) { /* safe */ }
   }
 
@@ -277,10 +277,10 @@ function clean() {
     const OrigAudio = window.Audio;
     window.Audio = function(src) {
       const a = new OrigAudio(src);
-      try {
-        // log creation + src
-       // logAudioEvent("Audio constructed src=" + (src || ""));
-      } catch(e){}
+      // try {
+      //   // log creation + src
+      //  // logAudioEvent("Audio constructed src=" + (src || ""));
+      // } catch(e){}
       // attach listeners to catch play
       a.addEventListener('play', function(){ logAudioEvent("Audio.play event src=" + (a.currentSrc || a.src || "")); }, {passive:true});
       a.addEventListener('playing', function(){ logAudioEvent("Audio.playing src=" + (a.currentSrc || a.src || "")); }, {passive:true});

@@ -131,6 +131,15 @@ MainView {
                 // Appel direct vers C++ exposé (cf. plus haut)
                 notifier.showNotificationMessage(cleanMsg)
             }
+            
+            if (message.startsWith("[MyNotifDebugAudio]")) {
+                // Nettoyer le message si nécessaire
+                if (message.contains("static.whatsapp"))
+                {
+                  // Appel direct vers C++ exposé (cf. plus haut)
+                  notifier.showNotificationMessage("New Whatsapp Audio Notification")
+                }
+            }
         }
       }
     
