@@ -11,7 +11,7 @@ import Ubuntu.Content 1.3
 
 // !!!!! The following breaks the app
 
-// import Lomiri.PushNotifications 0.1
+ import Lomiri.PushNotifications 0.1
 // 
 // PushClient {
 //         id: pushClient
@@ -22,6 +22,20 @@ import Ubuntu.Content 1.3
 //         }
 //     }
 // 
+// Store {
+// 
+//     EnableNotifications {
+//         id: enableNotifications
+//         token: pushClient.token
+//     }
+// 
+// 
+//     PushClient {
+//         id: pushClient
+//         appId: "alefnode.whatsweb_whatsweb"
+//         onTokenChanged: console.log("Got push token: ", token)
+//     }
+// }
 
 
 MainView {
