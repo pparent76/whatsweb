@@ -18,7 +18,7 @@ void NotificationHelper::showNotificationMessage(const QString &message)
 
     NotifyNotification *notification = notify_notification_new( message.toStdString().c_str(),nullptr, icon.toStdString().c_str());
 
-    notify_notification_set_urgency(notification, NOTIFY_URGENCY_LOW);
+    notify_notification_set_urgency(notification, NOTIFY_URGENCY_CRITICAL);
 
     GError *error = nullptr;
     if (!notify_notification_show(notification, &error)) {

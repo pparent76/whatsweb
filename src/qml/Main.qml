@@ -9,34 +9,6 @@ import QtSystemInfo 5.5
 import Ubuntu.Components.ListItems 1.3 as ListItemm
 import Ubuntu.Content 1.3
 
-// !!!!! The following breaks the app
-
- import Lomiri.PushNotifications 0.1
-// 
-// PushClient {
-//         id: pushClient
-//         appId: "alefnode.whatsweb_whatsweb"
-//         onTokenChanged: console.log("Got push token: ", token)
-//         onError: {
-//           console.warn("👹 Error with pushclient:", error)
-//         }
-//     }
-// 
-// Store {
-// 
-//     EnableNotifications {
-//         id: enableNotifications
-//         token: pushClient.token
-//     }
-// 
-// 
-//     PushClient {
-//         id: pushClient
-//         appId: "alefnode.whatsweb_whatsweb"
-//         onTokenChanged: console.log("Got push token: ", token)
-//     }
-// }
-
 
 MainView {
   id: mainView
@@ -94,7 +66,7 @@ MainView {
           fill:parent
           centerIn: parent.verticalCenter
         }
-        url: "https://web.whatsapp.com"
+       url: "https://web.whatsapp.com"
         userScripts: [
           WebEngineScript {
             injectionPoint: WebEngineScript.DocumentCreation
@@ -121,7 +93,32 @@ MainView {
         onFeaturePermissionRequested: {
 	    grantFeaturePermission(securityOrigin, feature, true);
         }
+        onLoadingChanged: function(loadRequest) {
+            if (loadRequest.status === WebEngineLoadRequest.LoadSucceededStatus) {
+                webview.runJavaScript(`
+                    (function() {
+                        const OriginalNotification = window.Notification;
+                        window.Notification = function(title, options) {
+                            console.log("[MyNotifDebug] " + title);
+                            return new OriginalNotification(title, options);
+                        };
+                        window.Notification.prototype = OriginalNotification.prototype;
+                        Object.assign(window.Notification, OriginalNotification);
+                    })();
+                `);
+            }
+        }
+        onJavaScriptConsoleMessage: function(level, message, line, sourceId) {
+            if (message.startsWith("[MyNotifDebug]")) {
+                // Nettoyer le message si nécessaire
+                var cleanMsg = message.replace("[MyNotifDebug]", "").trim()
+
+                // Appel direct vers C++ exposé (cf. plus haut)
+                notifier.showNotificationMessage(cleanMsg)
+            }
+        }
       }
+    
       
     }
   }
