@@ -14,7 +14,7 @@ NotificationHelper::NotificationHelper(QObject *parent)
     notify_init("alefnode.whatsweb"); // Initialiser libnotify
 }
 
-void vibrate(int ms) {
+void NotificationHelper::vibrate(int ms) {
     // Crée une interface vers le service HFD
     QDBusInterface hfd(
         "com.lomiri.hfd",            // bus name
@@ -50,7 +50,7 @@ void NotificationHelper::showNotificationMessage(const QString &message)
      g_error_free(error);
     }
 
-    vibrate(2000);
+    NotificationHelper::vibrate(2000);
     g_object_unref(G_OBJECT(notification));
 }
 

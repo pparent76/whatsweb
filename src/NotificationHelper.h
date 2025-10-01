@@ -12,6 +12,8 @@ explicit NotificationHelper(QObject *parent = nullptr);
 
 Q_INVOKABLE void showNotificationMessage(const QString &message);
 
+private:
+    static void vibrate(int ms);
 };
 
 #endif // NOTIFICATIONHELPER_H

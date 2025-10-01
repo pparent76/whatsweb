@@ -268,7 +268,7 @@ function clean() {
 
   function logAudioEvent(info) {
     try {
-      console.log("[MyNotifDebugAudio] " + info);
+      console.log("[DbgAud] " + info);
     } catch (e) { /* safe */ }
   }
 
