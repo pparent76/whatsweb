@@ -142,7 +142,7 @@ function notifyOnce(msg) {
 	    grantFeaturePermission(securityOrigin, feature, true);
         }
         //----------------------------------------------------------------------
-        //   Notification based on title changed (Medium priority wait 25ms)
+        //   Notification based on title changed (Medium priority wait 100ms)
         //----------------------------------------------------------------------        
         onTitleChanged: {
              // 1a. look for a number inside parentheses at start or end
@@ -160,7 +160,7 @@ function notifyOnce(msg) {
             lastUnreadCount=unread
         }
         //----------------------------------------------------------------------------
-        //  Notification based on audio sound file played (LOWER PRIORITY wait 50ms)
+        //  Notification based on audio sound file played (LOWER PRIORITY wait 300ms)
         //----------------------------------------------------------------------------
         onJavaScriptConsoleMessage: function(level, message, line, sourceId) {
             
