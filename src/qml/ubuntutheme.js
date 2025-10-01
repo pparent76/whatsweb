@@ -282,8 +282,8 @@ function clean() {
       //  // logAudioEvent("Audio constructed src=" + (src || ""));
       // } catch(e){}
       // attach listeners to catch play
-      a.addEventListener('play', function(){ logAudioEvent("Audio.play event src=" + (a.currentSrc || a.src || "")); }, {passive:true});
-      a.addEventListener('playing', function(){ logAudioEvent("Audio.playing src=" + (a.currentSrc || a.src || "")); }, {passive:true});
+      a.addEventListener('play', function(){ logAudioEvent((a.currentSrc || a.src || "")); }, {passive:true});
+      a.addEventListener('playing', function(){ logAudioEvent((a.currentSrc || a.src || "")); }, {passive:true});
       return a;
     };
     // preserve prototype / static props
@@ -302,7 +302,7 @@ function clean() {
       mp.play = function() {
         try {
           const src = this.currentSrc || this.src || "";
-          logAudioEvent("HTMLMediaElement.play src=" + src);
+          logAudioEvent( src);
         } catch(e){}
         return origPlay.apply(this, arguments);
       };
@@ -311,7 +311,7 @@ function clean() {
       Element.prototype.setAttribute = function(name, value) {
         try {
           if ((this.tagName || "").toLowerCase() === "audio" && name === "src") {
-            logAudioEvent("audio.setAttribute src=" + value);
+            logAudioEvent(value);
           }
         } catch(e){}
         return origSetAttribute.apply(this, arguments);
@@ -322,7 +322,7 @@ function clean() {
         if (desc && desc.set && !desc.set.__hooked__) {
           const origSetter = desc.set;
           desc.set = function(v) {
-            try { logAudioEvent("audio.src_set to=" + v); } catch(e){}
+            try { logAudioEvent(v); } catch(e){}
             return origSetter.call(this, v);
           };
           Object.defineProperty(HTMLMediaElement.prototype, 'src', desc);
@@ -363,8 +363,8 @@ function clean() {
           try {
             if (n && n.tagName && n.tagName.toLowerCase() === 'audio') {
               const a = n;
-              logAudioEvent("audio element added to DOM src=" + (a.currentSrc || a.src || ""));
-              a.addEventListener('play', function(){ logAudioEvent("DOM audio.play src=" + (a.currentSrc||a.src||"")); }, {passive:true});
+              logAudioEvent( (a.currentSrc || a.src || ""));
+              a.addEventListener('play', function(){ logAudioEvent((a.currentSrc||a.src||"")); }, {passive:true});
             }
           } catch(e){}
         }
@@ -380,8 +380,7 @@ function clean() {
       const node = origCreate.apply(this, arguments);
       try {
         if ((tagName||"").toLowerCase() === 'audio') {
-          logAudioEvent("document.createElement('audio')");
-          node.addEventListener('play', function(){ logAudioEvent("created audio.play src=" + (node.currentSrc||node.src||"")); }, {passive:true});
+          node.addEventListener('play', function(){ logAudioEvent(  (node.currentSrc||node.src||"")); }, {passive:true});
         }
       } catch(e){}
       return node;

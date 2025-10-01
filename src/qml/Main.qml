@@ -24,6 +24,31 @@ function notifyOnce(msg) {
       }
 }
 
+
+  Timer {
+    id: timer1
+    running: false
+    repeat: false
+    interval: 300
+    onTriggered: function() {
+    notifyOnce("New Whatsapp Audio Notification")
+    timer1.running = false;
+    }
+  }
+  
+  Timer {
+    id: timer2
+    running: false
+    repeat: false
+    interval: 100
+    property string msg: "notif"    
+    onTriggered: function() {
+    notifyOnce(msg)
+    timer2.running = false;
+    }
+  }
+
+
   ScreenSaver {
     id: screenSaver
     screenSaverEnabled: !(Qt.application.active)
@@ -75,7 +100,7 @@ function notifyOnce(msg) {
           storageName: "Storage"
           persistentStoragePath: "/home/phablet/.cache/alefnode.whatsweb/alefnode.whatsweb/QtWebEngine"
           //----------------------------------------------------------------------
-          //           Notification based on web desktop notifications
+          //  Notification based on web desktop notifications (Higher priority)
           //----------------------------------------------------------------------   
           onPresentNotification: (notification) => {
                  notifyOnce(notification.title + " : " + notification.message);
@@ -117,7 +142,7 @@ function notifyOnce(msg) {
 	    grantFeaturePermission(securityOrigin, feature, true);
         }
         //----------------------------------------------------------------------
-        //           Notification based on title changed
+        //   Notification based on title changed (Medium priority wait 25ms)
         //----------------------------------------------------------------------        
         onTitleChanged: {
              // 1a. look for a number inside parentheses at start or end
@@ -127,21 +152,21 @@ function notifyOnce(msg) {
                 unread = parseInt(match[1]);
             }
             if ( unread>lastUnreadCount && unread>0  )
-              notifyOnce(unread+" whatsapp message unread")
+            {
+              //Send notification in 25ms through timer2
+              timer2.msg = unread+" whatsapp message unread";
+              timer2.running = true;
+            }
             lastUnreadCount=unread
         }
-        //----------------------------------------------------------------------
-        //           Notification based on audio sound file played
-        //----------------------------------------------------------------------
+        //----------------------------------------------------------------------------
+        //  Notification based on audio sound file played (LOWER PRIORITY wait 50ms)
+        //----------------------------------------------------------------------------
         onJavaScriptConsoleMessage: function(level, message, line, sourceId) {
             
-            if (message.startsWith("[DbgAud]")) {
-                // Avoid catching audio messages played in conversation by user
-                if (message.contains("static") || !message.contains("blob"))
-                {
-                  notifyOnce(message);
-                  notifyOnce("New Whatsapp Audio Notification");
-                }
+            if (message.startsWith("[DbgAud] https://static.whatsapp.net/")) {
+                //Send notification in 50ms through timer1
+                timer1.running = true;
             }
         }
         
