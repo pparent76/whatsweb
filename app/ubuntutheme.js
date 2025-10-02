@@ -57,6 +57,9 @@ window.addEventListener("click", function() {
   const grid = event.target.closest('[role="grid"]');
   if (grid) {
       lastClickContact=1
+      document.getElementById("app").getElementsByClassName('two')[0].childNodes[4].style.display = '';      
+      document.getElementById("app").getElementsByClassName('two')[0].childNodes[3].style.display = 'none';
+      menu();
   }
   else
   {
@@ -94,9 +97,9 @@ window.addEventListener("click", function() {
   }
   
   
-  if (updatenotificacion == 0 || allownotification == 0){
-    disablenotifications();
-  }
+  //if (updatenotificacion == 0 || allownotification == 0){
+  //  disablenotifications();
+  //}
   
 });
 
@@ -117,18 +120,18 @@ function main(){
   // Resize Profile and Settings menu
   document.getElementById("app").getElementsByClassName('two')[0].childNodes[1].childNodes[0].style.minWidth = "100%"
 
-  document.getElementById("pane-side").addEventListener('click', function(event) {
-    // Aquí encontramos el DIV más cercano al evento de clic
-    var clickedDiv = event.target.closest('div');
-
-    // Verificamos si el clic ocurrió en un DIV específico
-    if (clickedDiv) {
-      // Aquí puedes hacer algo con el div que capturaste
-      document.getElementById("app").getElementsByClassName('two')[0].childNodes[3].style.display = 'none';
-      document.getElementById("app").getElementsByClassName('two')[0].childNodes[4].style.display = '';
-      menu();
-    }
-  });
+  // document.getElementById("pane-side").addEventListener('click', function(event) {
+  //   // Aquí encontramos el DIV más cercano al evento de clic
+  //   var clickedDiv = event.target.closest('div');
+  // 
+  //   // Verificamos si el clic ocurrió en un DIV específico
+  //   if (clickedDiv) {
+  //     // Aquí puedes hacer algo con el div que capturaste
+  //     document.getElementById("app").getElementsByClassName('two')[0].childNodes[3].style.display = 'none';
+  //     document.getElementById("app").getElementsByClassName('two')[0].childNodes[4].style.display = '';
+  //     menu();
+  //   }
+  // });
   
   //disablenotifications();
   
@@ -177,7 +180,7 @@ function menu(){
 
   check = 0;
   if ( check == 0 ) {
-    addCss(".back_button span { display:block; height: 100%; width: 100%;}.back_button { position: absolute; left: 0; z-index:200; width:60px; height:45px; display:-webkit-flex; display:flex; -webkit-align-items:center; align-items:center; -webkit-justify-content:center; justify-content:center } html[dir] .back_button { border-radius:50%; } html[dir=ltr] .back_button { right:11px } html[dir=rtl] .back_button { left:11px } .back_button path { fill:#93999c; fill-opacity:1 } .svg_back { transform: rotate(90deg); height: 100%;}");
+    addCss(".back_button span { display:block; height: 100%; width: 100%;}.back_button {  z-index:200; width:37px; height:45px; } html[dir] .back_button { border-radius:50%; } html[dir=ltr] .back_button { right:11px } html[dir=rtl] .back_button { left:11px } .back_button path { fill:#000000; fill-opacity:1 } .svg_back { transform: rotate(90deg); height: 100%;}");
     
   	addJS('window.onscroll = function() {myFunction()}; var navbar = document.getElementById("navbar"); var sticky = navbar.offsetTop; function myFunction() { if (window.pageYOffset >= sticky) { navbar.classList.add("sticky") } else { navbar.classList.remove("sticky"); } } ');
 
@@ -185,11 +188,16 @@ function menu(){
     newHTML.className += "back_button";
     newHTML.style = "";
     newHTML.addEventListener("click", showchatlist);
-    newHTML.innerHTML   = "<span data-icon='left'><svg class='svg_back' id='Layer_1' xmlns='http://www.w3.org/2000/svg' viewBox='0 0 21 21' width='21' height='21'><path fill='#263238' fill-opacity='.33' d='M4.8 6.1l5.7 5.7 5.7-5.7 1.6 1.6-7.3 7.2-7.3-7.2 1.6-1.6z'></path></svg></span>";
+    newHTML.innerHTML   = "<span data-icon='left' id='back_button' ><svg class='svg_back' id='Layer_1' xmlns='http://www.w3.org/2000/svg' viewBox='0 0 21 21' width='21' height='21'><path fill='#000000' fill-opacity='1' d='M4.8 6.1l5.7 5.7 5.7-5.7 1.6 1.6-7.3 7.2-7.3-7.2 1.6-1.6z'></path></svg></span>";
 
-    var eElement = document.getElementById("main").childNodes[1];
-    eElement.insertBefore(newHTML, eElement.firstChild);
-    
+    // var eElement = document.getElementById("main").childNodes[1];
+    // eElement.insertBefore(newHTML, eElement.firstChild);
+    document.querySelectorAll('header').forEach(header => {
+        // Exemple d'action : changer le background
+        if (  header.querySelector('[data-icon="search-refreshed"]') && ! header.querySelector('#back_button') )
+          header.prepend(newHTML); 
+        // Tu peux mettre ici n'importe quelle action sur chaque header
+    });
     check = check + 1;
   }
 
@@ -200,53 +208,53 @@ function showchatlist(){
   document.getElementById("app").getElementsByClassName('two')[0].childNodes[4].style.display = 'none'; 
 }
 
-function disablenotifications(){
-  // Disable update available notification
-  if (document.querySelector('span[data-icon="alert-update"]')) {
-    document.querySelector('span[data-icon="alert-update"]').parentElement.parentElement.style.display = 'none';
-    console.log("Disabled update available notification");
-    updatenotification = 1;
-  }
-  // Disable request to allow notifications
-  if (document.querySelector('span[data-icon="alert-notification"]')) {
-    document.querySelector('span[data-icon="alert-notification"]').parentElement.parentElement.style.display = 'none'; 
-    console.log("Disabled request allow notification");
-    allownotification = 1;
-  }
-}
+//function disablenotifications(){
+  // // Disable update available notification
+  // if (document.querySelector('span[data-icon="alert-update"]')) {
+  //   document.querySelector('span[data-icon="alert-update"]').parentElement.parentElement.style.display = 'none';
+  //   console.log("Disabled update available notification");
+  //   updatenotification = 1;
+  // }
+  // // Disable request to allow notifications
+  // if (document.querySelector('span[data-icon="alert-notification"]')) {
+  //   document.querySelector('span[data-icon="alert-notification"]').parentElement.parentElement.style.display = 'none'; 
+  //   console.log("Disabled request allow notification");
+  //   allownotification = 1;
+  // }
+//}
 
-function modaldialogresponsive(){
-  if (document.querySelector('[data-animate-dropdown-item]')){
-    var check = 0;
-    var checkExist = setInterval(function() {
-     	if (document.querySelector("[data-animate-modal-backdrop]")) {
-       	// Delete min-width class to center dialog message
-      	document.querySelector("[data-animate-modal-backdrop]").childNodes[0].style.minWidth = "0px";
-        
-      	if ( check == 0 ) {
-        	clearInterval(checkExist);
-        }
-      }
-      check = 1;
-  	}, 300);
-	} else {
-    document.querySelector("[data-animate-modal-backdrop]").childNodes[0].style.minWidth = "";
-  }
-}
+// function modaldialogresponsive(){
+//   if (document.querySelector('[data-animate-dropdown-item]')){
+//     var check = 0;
+//     var checkExist = setInterval(function() {
+//      	if (document.querySelector("[data-animate-modal-backdrop]")) {
+//        	// Delete min-width class to center dialog message
+//       	document.querySelector("[data-animate-modal-backdrop]").childNodes[0].style.minWidth = "0px";
+//         
+//       	if ( check == 0 ) {
+//         	clearInterval(checkExist);
+//         }
+//       }
+//       check = 1;
+//   	}, 300);
+// 	} else {
+//     document.querySelector("[data-animate-modal-backdrop]").childNodes[0].style.minWidth = "";
+//   }
+// }
 
-function startnewchat(){
-  var elems = document.querySelector('[data-testid="contact-list-key"]').getElementsByTagName("DIV");
-  for (var i = 0; i<elems.length; i++) {
-    elems[i].onclick = function() {
-
-      document.getElementById("app").getElementsByClassName('two')[0].childNodes[2].childNodes[1].style.display = '';
-      document.getElementById("app").getElementsByClassName('two')[0].childNodes[4].style.display = '';
-      document.getElementById("app").getElementsByClassName('two')[0].childNodes[3].style.display = 'none';
-      menu();
-
-    };
-  }
-}
+// function startnewchat(){
+//   var elems = document.querySelector('[data-testid="contact-list-key"]').getElementsByTagName("DIV");
+//   for (var i = 0; i<elems.length; i++) {
+//     elems[i].onclick = function() {
+// 
+//       document.getElementById("app").getElementsByClassName('two')[0].childNodes[2].childNodes[1].style.display = '';
+//       document.getElementById("app").getElementsByClassName('two')[0].childNodes[4].style.display = '';
+//       document.getElementById("app").getElementsByClassName('two')[0].childNodes[3].style.display = 'none';
+//       menu();
+// 
+//     };
+//   }
+// }
 
 function settingspanel(){
   if (document.querySelector('[data-testid="settings-drawer"]')){
