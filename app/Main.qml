@@ -8,6 +8,7 @@ import Qt.labs.settings 1.0
 import QtSystemInfo 5.5
 import Ubuntu.Components.ListItems 1.3 as ListItemm
 import Ubuntu.Content 1.3
+import Pparent.Notifications 1.0
 
 
 MainView {
@@ -15,14 +16,19 @@ MainView {
   property int lastUnreadCount: -1;
   property var lastNotifyTimestamp: 0;  
 
-//Function to allow notification while avoiding flooding at the same time
-function notifyOnce(msg) {
-    var currentTimestamp=Date.now();  // timestamp en millisecondes
-      if (currentTimestamp - lastNotifyTimestamp > 5000) {
-          lastNotifyTimestamp=currentTimestamp;  
-          notifier.showNotificationMessage(msg);
-      }
-}
+  //Object from notification module
+  NotificationHelper {
+        id: notifier
+  }
+    
+  //Function to allow notification while avoiding flooding at the same time
+  function notifyOnce(msg) {
+      var currentTimestamp=Date.now();  // timestamp en millisecondes
+        if (currentTimestamp - lastNotifyTimestamp > 5000) {
+            lastNotifyTimestamp=currentTimestamp;  
+            notifier.showNotificationMessage(msg);
+        }
+  }
 
 
   Timer {
@@ -60,13 +66,13 @@ function notifyOnce(msg) {
   
   anchors {
     fill: parent
-    bottomMargin: UbuntuApplication.inputMethod.visible ? UbuntuApplication.inputMethod.keyboardRectangle.height : 0
-    // Behavior on bottomMargin {
-    //     NumberAnimation {
-    //         duration: 175
-    //         easing.type: Easing.OutQuad
-    //     }
-    // }
+    bottomMargin: UbuntuApplication.inputMethod.visible ? UbuntuApplication.inputMethod.keyboardRectangle.height/(units.gridUnit / 8) : 0
+    Behavior on bottomMargin {
+        NumberAnimation {
+            duration: 175
+            easing.type: Easing.OutQuad
+        }
+    }
   }
  // anchorToKeyboard: true
 
@@ -87,7 +93,6 @@ function notifyOnce(msg) {
       
       //Webview-----------------------------------------------------------------------------------------------------
       WebEngineView {
-        zoomFactor: 2.5
         id: webview
         anchors{ fill: parent }
         focus: true
