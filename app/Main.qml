@@ -25,8 +25,12 @@ MainView {
   function notifyOnce(msg) {
       var currentTimestamp=Date.now();  // timestamp en millisecondes
         if (currentTimestamp - lastNotifyTimestamp > 5000) {
-            lastNotifyTimestamp=currentTimestamp;  
-            notifier.showNotificationMessage(msg);
+            //Send notifications only if app is not active
+            if (!(Qt.application.active))
+            {
+              lastNotifyTimestamp=currentTimestamp;  
+              notifier.showNotificationMessage(msg);
+            }
         }
   }
 
