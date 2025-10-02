@@ -11,6 +11,7 @@
 updatenotificacion = 0;
 allownotification = 0;
 var lastClickContact = 0;
+var lastClickEditable = 0;
 
 
   function addCss(cssString) {
@@ -80,9 +81,15 @@ window.addEventListener("click", function() {
   {
       lastClickContact=0
   }
-  //if (document.getElementById("app").getElementsByClassName('two')[0].childNodes[2].style.display == 'none') {
-  //  navigation();
-  //}
+  
+  lastClickEditable=0
+  const el=event.target;
+  if ( el && el.isContentEditable) 
+  {
+    lastClickEditable=1;
+  }
+
+
 	
   // First if to resize when sending a file/image/video/document
   if (document.querySelector('input[accept="image/*,video/mp4,video/3gpp,video/quicktime"]')){
@@ -92,7 +99,7 @@ window.addEventListener("click", function() {
     document.getElementById("app").getElementsByClassName('two')[0].childNodes[1].childNodes[1].style.minWidth = "90%";
   } else if (document.querySelector('input[accept="image/*,video/mp4,video/3gpp,video/quicktime"]') == null && document.getElementById("app").getElementsByClassName('two')[0] !== undefined){
     console.log("Restore profile width");
-    // Restore Profile and Settings menu
+    // Restore Profile and Settings menulef
     document.getElementById("app").getElementsByClassName('two')[0].childNodes[1].childNodes[0].style.minWidth = "100%";
     document.getElementById("app").getElementsByClassName('two')[0].childNodes[1].childNodes[0].style.flex= "0 0 45%";
     document.getElementById("app").getElementsByClassName('two')[0].childNodes[1].childNodes[1].style.minWidth = "";
@@ -131,8 +138,10 @@ function main(){
   //Avoid opening the keyboard when entering a chat
   document.body.addEventListener('focusin', (event) => {
   const el = event.target;
-  if (lastClickContact==1)
-    el.blur();
+    if ( lastClickEditable == 0 )
+    {
+      el.blur();
+    }
   });
 
   addMenuButton();
@@ -144,6 +153,25 @@ function main(){
   // Resize Profile and Settings menu
   document.getElementById("app").getElementsByClassName('two')[0].childNodes[1].childNodes[0].style.minWidth = "100%"
     
+  const container = document.getElementById('expressions-panel-container');
+
+  if (container) {
+    const observer = new MutationObserver((mutationsList) => {
+      for (const mutation of mutationsList) {
+        
+          document.querySelector('#expressions-panel-container > :first-child > :first-child').style.transform= 'scale(0.7)';
+          document.querySelector('#expressions-panel-container > :first-child > :first-child').style.left= '2%'; 
+          setTimeout(() => {
+          document.querySelector('#expressions-panel-container > :first-child > :first-child').style.transformOrigin = "left bottom"; 
+          document.querySelector('#expressions-panel-container > :first-child > :first-child').style.transform= 'scale(0.7)';
+          document.querySelector('#expressions-panel-container > :first-child > :first-child').style.left= '2%'; 
+        
+        }, 300);
+      }
+    });
+    observer.observe(container, { childList: true, subtree: true });
+  }
+
 }
 
 function showLeftMenu(){

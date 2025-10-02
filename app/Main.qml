@@ -68,16 +68,16 @@ MainView {
   applicationName: "alefnode.whatsweb"
   backgroundColor : "transparent"
   
-  anchors {
-    fill: parent
-    bottomMargin: UbuntuApplication.inputMethod.visible ? UbuntuApplication.inputMethod.keyboardRectangle.height/(units.gridUnit / 8) : 0
-    Behavior on bottomMargin {
-        NumberAnimation {
-            duration: 175
-            easing.type: Easing.OutQuad
-        }
-    }
-  }
+  // anchors {
+  //   fill: parent
+  //   bottomMargin: UbuntuApplication.inputMethod.visible ? UbuntuApplication.inputMethod.keyboardRectangle.height/(units.gridUnit / 8) : 0
+  //   Behavior on bottomMargin {
+  //       NumberAnimation {
+  //           duration: 175
+  //           easing.type: Easing.OutQuad
+  //       }
+  //   }
+  // }
  // anchorToKeyboard: true
 
 
@@ -92,17 +92,25 @@ MainView {
     Page {
       id: pageMain
       anchors.fill: parent
+      
 
       
       
       //Webview-----------------------------------------------------------------------------------------------------
       WebEngineView {
         id: webview
+        property int keyboardSize: UbuntuApplication.inputMethod.visible ? 10+UbuntuApplication.inputMethod.keyboardRectangle.height/(units.gridUnit / 8) : 0
         anchors{ fill: parent }
         focus: true
         property var currentWebview: webview
         settings.pluginsEnabled: true
 
+        onKeyboardSizeChanged: {
+        // Échapper correctement les quotes si nécessaire
+        const jsCode = `document.querySelector('footer').style.paddingBottom = "${keyboardSize}px"`;
+        webview.runJavaScript(jsCode);
+        }
+        
         profile:  WebEngineProfile {
           id: webContext
           httpUserAgent: "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/87.0.4280.144 Safari/537.36"
