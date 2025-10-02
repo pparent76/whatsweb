@@ -13,6 +13,21 @@ allownotification = 0;
 var lastClickContact = 0;
 
 
+  function addCss(cssString) {
+      var head = document.getElementsByTagName('head')[0];
+      var newCss = document.createElement('style');
+      newCss.type = "text/css";
+      newCss.innerHTML = cssString;
+      head.appendChild(newCss);
+  }
+  
+  function addJS(jsString) {
+      var head = document.getElementsByTagName('head')[0];
+      var newJS = document.createElement('script');
+      newJS.innerHTML = jsString;
+      head.appendChild(newJS);
+  }
+  
 // Listeners to startup APP
 window.addEventListener("load", function(event) {
     console.log("Loaded");
@@ -59,7 +74,7 @@ window.addEventListener("click", function() {
       lastClickContact=1
       document.getElementById("app").getElementsByClassName('two')[0].childNodes[4].style.display = '';      
       document.getElementById("app").getElementsByClassName('two')[0].childNodes[3].style.display = 'none';
-      menu();
+      addBackButton();
   }
   else
   {
@@ -113,28 +128,6 @@ function main(){
   document.getElementById('app').getElementsByClassName('two')[0].style.minWidth = 'auto';
   document.getElementById('app').getElementsByClassName('two')[0].style.minHeight = 'auto';
   
-   if (document.querySelector('header')) {
-     document.querySelector('header').style.display = 'none';
-   }
-   
-  // Resize Profile and Settings menu
-  document.getElementById("app").getElementsByClassName('two')[0].childNodes[1].childNodes[0].style.minWidth = "100%"
-
-  // document.getElementById("pane-side").addEventListener('click', function(event) {
-  //   // Aquí encontramos el DIV más cercano al evento de clic
-  //   var clickedDiv = event.target.closest('div');
-  // 
-  //   // Verificamos si el clic ocurrió en un DIV específico
-  //   if (clickedDiv) {
-  //     // Aquí puedes hacer algo con el div que capturaste
-  //     document.getElementById("app").getElementsByClassName('two')[0].childNodes[3].style.display = 'none';
-  //     document.getElementById("app").getElementsByClassName('two')[0].childNodes[4].style.display = '';
-  //     menu();
-  //   }
-  // });
-  
-  //disablenotifications();
-  
   //Avoid opening the keyboard when entering a chat
   document.body.addEventListener('focusin', (event) => {
   const el = event.target;
@@ -142,7 +135,46 @@ function main(){
     el.blur();
   });
 
+  addMenuButton();
+  
+   if (document.querySelector('header')) {
+     document.querySelector('header').style.display = 'none';
+   }
+   
+  // Resize Profile and Settings menu
+  document.getElementById("app").getElementsByClassName('two')[0].childNodes[1].childNodes[0].style.minWidth = "100%"
     
+}
+
+function showLeftMenu(){
+  if (document.querySelector('header')) {
+      if ( document.querySelector('header').style.display == 'none' )
+      {
+        document.querySelector('header').style.display = 'block';
+        document.getElementById("app").getElementsByClassName('two')[0].childNodes[1].childNodes[0].style.minWidth = "90%"
+      }
+      else
+      {
+        document.querySelector('header').style.display = 'none';
+        document.getElementById("app").getElementsByClassName('two')[0].childNodes[1].childNodes[0].style.minWidth = "100%"        
+      }
+  }
+}
+
+
+function addMenuButton(){
+    addCss(".added_menu_button span { display:block; height: 100%; width: 100%;}.added_menu_button {  z-index:500; width:50px; height:45px; } html[dir] .added_menu_button { border-radius:50%; } html[dir=ltr] .added_menu_button { right:11px } html[dir=rtl] .added_menu_button { left:11px } .added_menu_button path { fill:#000000; fill-opacity:1 } .svg_back { transform: rotate(90deg); height: 100%;}");
+
+    var newHTML         = document.createElement('div');
+    newHTML.className += "added_menu_button";
+    newHTML.style = "";
+    newHTML.addEventListener("click", showLeftMenu);    
+    newHTML.innerHTML   = '<a href="javascript:void(0);" ><span class="html-span" style="height:50px; width:60px;"><div class="html-div" style="padding:10px; --x-transform: none;"><div aria-expanded="false" aria-haspopup="menu" aria-label="MenuLeft" class=""><div class="html-div"><span aria-hidden="true" data-icon="more-refreshed" ><svg viewBox="0 0 24 24" height="24" width="24" preserveAspectRatio="xMidYMid meet" class="" fill="none"><title>more-refreshed</title><path d="M12 20C11.45 20 10.9792 19.8042 10.5875 19.4125C10.1958 19.0208 10 18.55 10 18C10 17.45 10.1958 16.9792 10.5875 16.5875C10.9792 16.1958 11.45 16 12 16C12.55 16 13.0208 16.1958 13.4125 16.5875C13.8042 16.9792 14 17.45 14 18C14 18.55 13.8042 19.0208 13.4125 19.4125C13.0208 19.8042 12.55 20 12 20ZM12 14C11.45 14 10.9792 13.8042 10.5875 13.4125C10.1958 13.0208 10 12.55 10 12C10 11.45 10.1958 10.9792 10.5875 10.5875C10.9792 10.1958 11.45 10 12 10C12.55 10 13.0208 10.1958 13.4125 10.5875C13.8042 10.9792 14 11.45 14 12C14 12.55 13.8042 13.0208 13.4125 13.4125C13.0208 13.8042 12.55 14 12 14ZM12 8C11.45 8 10.9792 7.80417 10.5875 7.4125C10.1958 7.02083 10 6.55 10 6C10 5.45 10.1958 4.97917 10.5875 4.5875C10.9792 4.19583 11.45 4 12 4C12.55 4 13.0208 4.19583 13.4125 4.5875C13.8042 4.97917 14 5.45 14 6C14 6.55 13.8042 7.02083 13.4125 7.4125C13.0208 7.80417 12.55 8 12 8Z" fill="currentColor"></path></svg></span></div><div class="html-div" role="none" data-visualcompletion="ignore" style="inset: 0px;"></div></div></div></span></a>';
+    
+    document.querySelectorAll('header').forEach(header => {
+        if (  header.querySelector('[data-icon="new-chat-outline"]') && ! header.querySelector('#added_menu_button') )
+          header.prepend(newHTML); 
+    });
 }
 
 
@@ -153,30 +185,16 @@ function navigation() {
       console.log("Exists!");
       if ( check == 0 ) {
         clearInterval(checkExist);
-        menu();
+        addBackButton();
       }
       check = 1;
     }
   }, 200); 
 }
 
-function menu(){
+function addBackButton(){
 
   console.log("Call menu function")
-  function addCss(cssString) {
-      var head = document.getElementsByTagName('head')[0];
-      var newCss = document.createElement('style');
-      newCss.type = "text/css";
-      newCss.innerHTML = cssString;
-      head.appendChild(newCss);
-  }
-  
-  function addJS(jsString) {
-      var head = document.getElementsByTagName('head')[0];
-      var newJS = document.createElement('script');
-      newJS.innerHTML = jsString;
-      head.appendChild(newJS);
-  }
 
   check = 0;
   if ( check == 0 ) {
@@ -208,53 +226,6 @@ function showchatlist(){
   document.getElementById("app").getElementsByClassName('two')[0].childNodes[4].style.display = 'none'; 
 }
 
-//function disablenotifications(){
-  // // Disable update available notification
-  // if (document.querySelector('span[data-icon="alert-update"]')) {
-  //   document.querySelector('span[data-icon="alert-update"]').parentElement.parentElement.style.display = 'none';
-  //   console.log("Disabled update available notification");
-  //   updatenotification = 1;
-  // }
-  // // Disable request to allow notifications
-  // if (document.querySelector('span[data-icon="alert-notification"]')) {
-  //   document.querySelector('span[data-icon="alert-notification"]').parentElement.parentElement.style.display = 'none'; 
-  //   console.log("Disabled request allow notification");
-  //   allownotification = 1;
-  // }
-//}
-
-// function modaldialogresponsive(){
-//   if (document.querySelector('[data-animate-dropdown-item]')){
-//     var check = 0;
-//     var checkExist = setInterval(function() {
-//      	if (document.querySelector("[data-animate-modal-backdrop]")) {
-//        	// Delete min-width class to center dialog message
-//       	document.querySelector("[data-animate-modal-backdrop]").childNodes[0].style.minWidth = "0px";
-//         
-//       	if ( check == 0 ) {
-//         	clearInterval(checkExist);
-//         }
-//       }
-//       check = 1;
-//   	}, 300);
-// 	} else {
-//     document.querySelector("[data-animate-modal-backdrop]").childNodes[0].style.minWidth = "";
-//   }
-// }
-
-// function startnewchat(){
-//   var elems = document.querySelector('[data-testid="contact-list-key"]').getElementsByTagName("DIV");
-//   for (var i = 0; i<elems.length; i++) {
-//     elems[i].onclick = function() {
-// 
-//       document.getElementById("app").getElementsByClassName('two')[0].childNodes[2].childNodes[1].style.display = '';
-//       document.getElementById("app").getElementsByClassName('two')[0].childNodes[4].style.display = '';
-//       document.getElementById("app").getElementsByClassName('two')[0].childNodes[3].style.display = 'none';
-//       menu();
-// 
-//     };
-//   }
-// }
 
 function settingspanel(){
   if (document.querySelector('[data-testid="settings-drawer"]')){
