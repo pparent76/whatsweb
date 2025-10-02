@@ -10,6 +10,7 @@
 // Declare variables
 updatenotificacion = 0;
 allownotification = 0;
+var lastClickContact = 0;
 
 
 // Listeners to startup APP
@@ -28,6 +29,7 @@ document.addEventListener('readystatechange', event => {
 // First resize after loading the web
 var check = 0;
 var checkExist = setInterval(function() {
+  
   if (document.getElementById('app').getElementsByClassName('browser')[0]) {
     clean();
     location.reload();
@@ -52,6 +54,14 @@ var checkExist = setInterval(function() {
 window.addEventListener("click", function() {
   console.log("Click");
   
+  const grid = event.target.closest('[role="grid"]');
+  if (grid) {
+      lastClickContact=1
+  }
+  else
+  {
+      lastClickContact=0
+  }
   //if (document.getElementById("app").getElementsByClassName('two')[0].childNodes[2].style.display == 'none') {
   //  navigation();
   //}
@@ -95,13 +105,17 @@ function main(){
   console.log("Call main function")
   document.getElementById("app").getElementsByClassName('two')[0].childNodes[4].style.display = 'none';
   // document.getElementById("app").getElementsByClassName('two')[0].childNodes[1].childNodes[2].style.display = 'none';
-  document.getElementById("app").getElementsByClassName('two')[0].childNodes[2].style.width = "10%"
-  document.getElementById("app").getElementsByClassName('two')[0].childNodes[3].style.minWidth = "90%"
+  document.getElementById("app").getElementsByClassName('two')[0].childNodes[2].style.width = "0%"
+  document.getElementById("app").getElementsByClassName('two')[0].childNodes[3].style.minWidth = "100%"
   document.getElementById('app').getElementsByClassName('two')[0].style.minWidth = 'auto';
   document.getElementById('app').getElementsByClassName('two')[0].style.minHeight = 'auto';
   
+   if (document.querySelector('header')) {
+     document.querySelector('header').style.display = 'none';
+   }
+   
   // Resize Profile and Settings menu
-  //document.getElementById("app").getElementsByClassName('two')[0].childNodes[1].childNodes[0].style.minWidth = "90%"
+  document.getElementById("app").getElementsByClassName('two')[0].childNodes[1].childNodes[0].style.minWidth = "100%"
 
   document.getElementById("pane-side").addEventListener('click', function(event) {
     // Aquí encontramos el DIV más cercano al evento de clic
@@ -115,8 +129,17 @@ function main(){
       menu();
     }
   });
-  disablenotifications();
   
+  //disablenotifications();
+  
+  //Avoid opening the keyboard when entering a chat
+  document.body.addEventListener('focusin', (event) => {
+  const el = event.target;
+  if (lastClickContact==1)
+    el.blur();
+  });
+
+    
 }
 
 
@@ -238,6 +261,8 @@ function inchatcontactandgroupinfo(){
       document.getElementById("app").getElementsByClassName('three')[0].childNodes[5].style.width = "90%";
       document.getElementById("app").getElementsByClassName('three')[0].childNodes[5].style.maxWidth = "100%"; 
   }
+
+
 }
 function restoreinchatcontactandgroupinfo(){
   console.log("restoreinchatcontactandgroupinfo")
