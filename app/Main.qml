@@ -99,6 +99,7 @@ MainView {
       //Webview-----------------------------------------------------------------------------------------------------
       WebEngineView {
         id: webview
+        audioMuted: !Qt.application.active
         property int keyboardSize: UbuntuApplication.inputMethod.visible ? 10+UbuntuApplication.inputMethod.keyboardRectangle.height/(units.gridUnit / 8) : 0
         anchors{ fill: parent }
         focus: true
