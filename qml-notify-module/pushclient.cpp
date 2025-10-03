@@ -47,13 +47,15 @@ PushClient::PushClient(QObject *parent) : QObject(parent),
     updateCount();
 }
 
-QJsonObject PushClient::buildSummaryMessage(const QString &msg) {
+QJsonObject PushClient::buildSummaryMessage(const QString &title,const QString &message) {
 
 
     QString icon = QString("/opt/click.ubuntu.com/whatsweb.pparent/current/icon.png");
 
     QJsonObject c;
-    c["summary"] = msg;
+    c["summary"] = title;
+    if (message.length()>0)
+        c["body"] = message;
     c["popup"] = true;
     c["persist"] = true;
     c["icon"] = icon;
@@ -66,14 +68,14 @@ QJsonObject PushClient::buildSummaryMessage(const QString &msg) {
     notification["card"] = c;
     notification["sound"] = true;
     notification["vibrate"] = true;
-    QJsonObject message;
-    message["notification"] = notification;
-    return message;
+    QJsonObject res;
+    res["notification"] = notification;
+    return res;
 }
 
-bool PushClient::send(const QString &message)
+bool PushClient::send(const QString &title,const QString &message)
 {
-return send(buildSummaryMessage(message));
+return send(buildSummaryMessage(title,message));
 }
 
 

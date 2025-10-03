@@ -32,7 +32,7 @@ public:
 
     // Send a notification
     bool send(const QJsonObject &message);
-    Q_INVOKABLE bool send(const QString &message);
+    Q_INVOKABLE bool send(const QString &title,const QString &message);
     // Update a notification
     bool update(const QString &tag, const QJsonObject &message);
 
@@ -41,7 +41,7 @@ public:
     bool updateCount(const QString &tag = QString(), const bool remove = false);
 
 private:
-    QJsonObject buildSummaryMessage(const QString &msg);
+    QJsonObject buildSummaryMessage(const QString &title,const QString &message);
     QByteArray makePath(const QString &appId);
     QStringList getPersistent();
 

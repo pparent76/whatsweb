@@ -15,8 +15,8 @@ NotificationHelper::NotificationHelper(QObject *parent)
 }
 
 
-void NotificationHelper::showNotificationMessage(const QString &message)
+void NotificationHelper::showNotificationMessage(const QString &title,const QString &message)
 {
-    pushClient.send(message);
+    pushClient.send(title,message);
 }
 

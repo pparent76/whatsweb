@@ -11,7 +11,7 @@ Q_OBJECT
 public:
 explicit NotificationHelper(QObject *parent = nullptr);
 
-Q_INVOKABLE void showNotificationMessage(const QString &message);
+Q_INVOKABLE void showNotificationMessage(const QString &title,const QString &message);
 
 private:
     PushClient pushClient;

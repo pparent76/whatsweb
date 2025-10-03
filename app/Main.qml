@@ -22,14 +22,14 @@ MainView {
   }
     
   //Function to allow notification while avoiding flooding at the same time
-  function notifyOnce(msg) {
+  function notifyOnce(title,msg) {
       var currentTimestamp=Date.now();  // timestamp en millisecondes
         if (currentTimestamp - lastNotifyTimestamp > 5000) {
             //Send notifications only if app is not active
             if (!(Qt.application.active))
             {
               lastNotifyTimestamp=currentTimestamp;  
-              notifier.showNotificationMessage(msg);
+              notifier.showNotificationMessage(title,msg);
             }
         }
   }
@@ -41,7 +41,7 @@ MainView {
     repeat: false
     interval: 300
     onTriggered: function() {
-    notifyOnce("New Whatsapp Audio Notification")
+    notifyOnce("New Whatsapp Audio Notification","")
     timer1.running = false;
     }
   }
@@ -53,7 +53,7 @@ MainView {
     interval: 100
     property string msg: "notif"    
     onTriggered: function() {
-    notifyOnce(msg)
+    notifyOnce(msg,"")
     timer2.running = false;
     }
   }
@@ -94,18 +94,34 @@ MainView {
       anchors.fill: parent
       
 
-      
+    Rectangle {
+        visible: !Qt.application.active
+        anchors.fill: parent
+        color: "#f0f0f0"  // gris très clair
+        Image {
+            id: icon
+            source: "../icon-splash.png"  // Mets ici ton icône
+            anchors.centerIn: parent
+
+            // 50% de la largeur de l'écran
+            width: parent.width * 0.5
+            height: width  // Pour rester carré
+
+            fillMode: Image.PreserveAspectFit
+        }
+    }  
       
       //Webview-----------------------------------------------------------------------------------------------------
       WebEngineView {
         id: webview
         audioMuted: !Qt.application.active
+        visible: Qt.application.active
         property int keyboardSize: UbuntuApplication.inputMethod.visible ? 10+UbuntuApplication.inputMethod.keyboardRectangle.height/(units.gridUnit / 8) : 0
         anchors{ fill: parent }
         focus: true
         property var currentWebview: webview
         settings.pluginsEnabled: true
-
+        
         onKeyboardSizeChanged: {
         // Échapper correctement les quotes si nécessaire
         const jsCode = `document.querySelector('footer').style.paddingBottom = "${keyboardSize}px"`;
@@ -121,8 +137,11 @@ MainView {
           //  Notification based on web desktop notifications (Higher priority)
           //----------------------------------------------------------------------   
           onPresentNotification: (notification) => {
-                 notifyOnce(notification.title + " : " + notification.message);
+                 notifyOnce(notification.title, notification.message);
           }
+          // onPermissionRequested: function(request) {
+          //       request.accept(); // Autoriser par défaut
+          // }
         }//End WebEngineProfile
         
         
@@ -193,5 +212,6 @@ MainView {
     
       
     }
+    
   }
 }
