@@ -1,5 +1,5 @@
 {
-    "name": "alefnode.whatsweb",
+    "name": "whatsweb.pparent",
     "description": "WhatsApp client with Responsive Design.",
     "architecture": "@CLICK_ARCH@",
 
@@ -9,13 +9,13 @@
             "apparmor": "whatsweb.apparmor",
             "desktop":  "whatsweb.desktop",
             "content-hub": "content-hub.json"
-        }
+        },
+        "push": {
+        "apparmor": "whatsweb-push.apparmor",
+        "push-helper": "whatsweb-push-helper.json"
+        }   
     },
-    "push": {
-        "apparmor": "push-apparmor.json",
-        "push-helper": "push.json"
-    },
-    "version": "0.3.0",
+    "version": "0.3.3",
     "maintainer": "Adrian Campos <adriancampos@teachelp.com>",
     "framework" : "ubuntu-sdk-20.04"
 }

@@ -65,7 +65,7 @@ MainView {
   }
   objectName: "mainView"
   //theme.name: "Ubuntu.Components.Themes.SuruDark"
-  applicationName: "alefnode.whatsweb"
+  applicationName: "whatsweb.pparent"
   backgroundColor : "transparent"
   
   // anchors {
@@ -115,7 +115,7 @@ MainView {
           id: webContext
           httpUserAgent: "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/87.0.4280.144 Safari/537.36"
           storageName: "Storage"
-          persistentStoragePath: "/home/phablet/.cache/alefnode.whatsweb/alefnode.whatsweb/QtWebEngine"
+          persistentStoragePath: "/home/phablet/.cache/whatsweb.pparent/QtWebEngine"
           //----------------------------------------------------------------------
           //  Notification based on web desktop notifications (Higher priority)
           //----------------------------------------------------------------------   

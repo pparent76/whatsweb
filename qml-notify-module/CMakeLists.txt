@@ -15,6 +15,8 @@ pkg_check_modules(LIBNOTIFY REQUIRED libnotify)
 add_library(NotificationsPlugin SHARED
     NotificationHelper.cpp
     NotificationHelper.h
+    pushclient.cpp
+    pushclient.h    
     plugin.cpp
 )
 

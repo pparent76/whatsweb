@@ -1,6 +1,7 @@
 #ifndef NOTIFICATIONHELPER_H
 #define NOTIFICATIONHELPER_H
 
+#include "pushclient.h"
 #include <QObject>
 #include <QString>
 
@@ -13,7 +14,7 @@ explicit NotificationHelper(QObject *parent = nullptr);
 Q_INVOKABLE void showNotificationMessage(const QString &message);
 
 private:
-    static void vibrate(int ms);
+    PushClient pushClient;
 };
 
 #endif // NOTIFICATIONHELPER_H
