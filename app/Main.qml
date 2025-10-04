@@ -99,6 +99,15 @@ MainView {
         anchors.fill: parent
         color: "#f0f0f0"  // gris très clair
         Image {
+            id: screensaverBackground
+            source: "../screensaver.png"  // Mets ici ton icône
+            anchors.centerIn: parent
+
+            // 50% de la largeur de l'écran
+            width: parent.width
+            height: parent.height  // Pour rester carré
+        }
+        Image {
             id: icon
             source: "../icon-splash.png"  // Mets ici ton icône
             anchors.centerIn: parent
