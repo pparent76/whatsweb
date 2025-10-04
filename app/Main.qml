@@ -106,6 +106,7 @@ MainView {
             // 50% de la largeur de l'écran
             width: parent.width
             height: parent.height  // Pour rester carré
+            
         }
         Image {
             id: icon
@@ -204,6 +205,10 @@ MainView {
               timer2.running = true;
             }
             lastUnreadCount=unread
+            if (unread > 0)
+              notifier.updateCount(unread)
+            else
+              notifier.updateCount(0)
         }
         //----------------------------------------------------------------------------
         //  Notification based on audio sound file played (LOWER PRIORITY wait 300ms)

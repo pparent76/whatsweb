@@ -18,14 +18,10 @@ public:
 
     Q_INVOKABLE bool send(const QString &title,const QString &message);
     
+    Q_INVOKABLE bool updateCount(const int count);
+    
     // Send a notification
     bool sendJSON(const QJsonObject &message);
-    // Update a notification
-    bool update(const QString &tag, const QJsonObject &message);
-
-    bool hasTag(const QString &tag);
-    bool clearPersistent(const QString &tag);
-    bool updateCount(const QString &tag = QString(), const bool remove = false);
 
 private:
     QJsonObject buildSummaryMessage(const QString &title,const QString &message);

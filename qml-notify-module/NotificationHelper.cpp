@@ -72,71 +72,25 @@ bool NotificationHelper::sendJSON(const QJsonObject &message)
     qDebug() << "[POST SUCCESS] >> Message posted.";
     QJsonObject n = message.value("notification").toObject();
     QString tag = n.value("tag").toString();
-    updateCount(tag);
     return true;
 }
 
-bool NotificationHelper::update(const QString &tag, const QJsonObject &message)
+
+
+bool NotificationHelper::updateCount(const int count)
 {
-    if (hasTag(tag)) {
-        clearPersistent(tag);
-    }
-    return sendJSON(message);
-}
-
-bool NotificationHelper::hasTag(const QString &tag)
-{
-    return m_tags.contains(tag);
-}
-
-bool NotificationHelper::clearPersistent(const QString &tag)
-{
-    if (m_tags.contains(tag)) {
-        qDebug() << "[REMOVE] >> Removing message: " << tag;
-        QDBusMessage message = QDBusMessage::createMethodCall(POSTAL_SERVICE,
-                                                              makePath(PUSH_APP_ID),
-                                                              POSTAL_IFACE,
-                                                              "ClearPersistent");
-        message << PUSH_APP_ID;
-        message << tag;
-
-        QDBusMessage reply = m_conn.call(message);
-        if (reply.type() == QDBusMessage::ErrorMessage) {
-            qDebug() << "[REMOVE ERROR] " << reply.errorMessage();
-            return false;
-        }
-        qDebug() << "[REMOVE SUCCESS] Notification removed";
-        return updateCount(tag, true);
-    }
-    return false;
-}
-
-bool NotificationHelper::updateCount(const QString &tag, const bool remove)
-{
-    qDebug() << "[COUNT] >> Updating launcher count";
-    if (!tag.isEmpty()) {
-        if (!remove && !m_tags.contains(tag)) {
-            qDebug() << "[COUNT] >> Tag not yet in persistent list. adding it now: " << tag;
-            m_tags << tag;
-        }
-
-        if (remove && m_tags.contains(tag)) {
-            qDebug() << "[COUNT] >> Removing tag from persistent list: " << tag;
-            m_tags.removeAll(tag);
-        }
-    }
-
-    bool visible = m_tags.count() != 0;
+    bool visible = count != 0;
     QDBusMessage message = QDBusMessage::createMethodCall(POSTAL_SERVICE,
                                                           makePath(PUSH_APP_ID),
                                                           POSTAL_IFACE,
                                                           "SetCounter");
-    message << PUSH_APP_ID << m_tags.count() << visible;
+    message << PUSH_APP_ID << count << visible;
     bool result = m_conn.send(message);
     if (result) {
         qDebug() << "[COUNT] >> Updated.";
     }
     return result;
+    
 }
 
 //shamelessly stolen from accounts-polld
@@ -186,8 +140,7 @@ QStringList NotificationHelper::getPersistent()
 NotificationHelper::NotificationHelper(QObject *parent) : QObject(parent),
     m_conn(QDBusConnection::sessionBus())
 {
-    //    m_tags = getPersistent();
-    updateCount();
+
 }
 
 
