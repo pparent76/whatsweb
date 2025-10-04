@@ -13,20 +13,18 @@ public:
     
     explicit NotificationHelper(QObject *parent = 0);
 
+    //Send a notification from title and message information
     Q_INVOKABLE void showNotificationMessage(const QString &title,const QString &message);
-
-
-    Q_INVOKABLE bool send(const QString &title,const QString &message);
     
+    //Update notification counter on icon
     Q_INVOKABLE bool updateCount(const int count);
     
-    // Send a notification
+    // Send a notification based on JSON notification
     bool sendJSON(const QJsonObject &message);
 
 private:
     QJsonObject buildSummaryMessage(const QString &title,const QString &message);
     QByteArray makePath(const QString &appId);
-    QStringList getPersistent();
 
     QDBusConnection m_conn;
     QStringList m_tags;

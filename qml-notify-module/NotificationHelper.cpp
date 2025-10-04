@@ -45,11 +45,6 @@ QJsonObject NotificationHelper::buildSummaryMessage(const QString &title,const Q
     return res;
 }
 
-bool NotificationHelper::send(const QString &title,const QString &message)
-{
-return sendJSON(buildSummaryMessage(title,message));
-}
-
 
 //shamelessly stolen from accounts-polld
 bool NotificationHelper::sendJSON(const QJsonObject &message)
@@ -120,23 +115,6 @@ QByteArray NotificationHelper::makePath(const QString &appId)
     return path;
 }
 
-QStringList NotificationHelper::getPersistent()
-{
-    QDBusMessage message = QDBusMessage::createMethodCall(POSTAL_SERVICE,
-                                                          makePath(PUSH_APP_ID),
-                                                          POSTAL_IFACE,
-                                                          "ListPersistent");
-    message << PUSH_APP_ID;
-    QDBusMessage reply = m_conn.call(message);
-    if (reply.type() == QDBusMessage::ErrorMessage) {
-        qDebug() << reply.errorMessage();
-        return QStringList();
-    }
-    QStringList tags = reply.arguments()[0].toStringList();
-    qDebug() << "[TAGS] >> " << tags;
-    return tags;
-}
-
 NotificationHelper::NotificationHelper(QObject *parent) : QObject(parent),
     m_conn(QDBusConnection::sessionBus())
 {
@@ -146,6 +124,6 @@ NotificationHelper::NotificationHelper(QObject *parent) : QObject(parent),
 
 void NotificationHelper::showNotificationMessage(const QString &title,const QString &message)
 {
-    send(title,message);
+    sendJSON(buildSummaryMessage(title,message));
 }
 
