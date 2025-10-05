@@ -13,6 +13,8 @@ allownotification = 0;
 var lastClickContact = 0;
 var lastClickEditable = 0;
 
+//Request by default webnofications permission
+Notification.requestPermission();
 
   function addCss(cssString) {
       var head = document.getElementsByTagName('head')[0];
@@ -153,8 +155,8 @@ function main(){
   // Resize Profile and Settings menu
   document.getElementById("app").getElementsByClassName('two')[0].childNodes[1].childNodes[0].style.minWidth = "100%"
     
+  //Fix emoticons panel
   const container = document.getElementById('expressions-panel-container');
-
   if (container) {
     const observer = new MutationObserver((mutationsList) => {
       for (const mutation of mutationsList) {
@@ -172,6 +174,8 @@ function main(){
     observer.observe(container, { childList: true, subtree: true });
   }
 
+  //Request by default webnofications permission
+  Notification.requestPermission();
 }
 
 function showLeftMenu(){
