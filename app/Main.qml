@@ -19,6 +19,7 @@ MainView {
   //Object from notification module
   NotificationHelper {
         id: notifier
+        push_app_id:"whatsweb.pparent_whatsweb"
   }
     
   //Function to allow notification while avoiding flooding at the same time

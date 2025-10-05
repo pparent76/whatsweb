@@ -8,6 +8,7 @@
 
 class NotificationHelper : public QObject
 {
+Q_PROPERTY(QString push_app_id READ get_push_app_id WRITE set_push_app_id)
 Q_OBJECT
 public:
     
@@ -21,6 +22,9 @@ public:
     
     // Send a notification based on JSON notification
     bool sendJSON(const QJsonObject &message);
+    
+    QString get_push_app_id();
+    void set_push_app_id(QString value);
 
 private:
     QJsonObject buildSummaryMessage(const QString &title,const QString &message);
@@ -28,6 +32,7 @@ private:
 
     QDBusConnection m_conn;
     QStringList m_tags;
+    QString push_app_id;
 };
 
 #endif // NOTIFICATIONHELPER_H

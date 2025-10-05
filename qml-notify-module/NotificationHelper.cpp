@@ -9,7 +9,6 @@
 #include <QDebug>
 #include <QJsonArray>
 
-#define PUSH_APP_ID "whatsweb.pparent_whatsweb"
 #define PUSH_SERVICE "com.lomiri.PushNotifications"
 #define POSTAL_SERVICE "com.lomiri.Postal"
 #define PUSH_PATH "/com/lomiri/PushNotifications"
@@ -22,7 +21,9 @@
 QJsonObject NotificationHelper::buildSummaryMessage(const QString &title,const QString &message) {
 
 
-    QString icon = QString("/opt/click.ubuntu.com/whatsweb.pparent/current/icon.png");
+    QString appid=push_app_id.section('_', 0, 0);
+    QString activityid=push_app_id.section('_', 1, 1);    
+    QString icon = QString("/opt/click.ubuntu.com/")+appid+QString("/current/icon.png");
 
     QJsonObject c;
     c["summary"] = title;
@@ -32,7 +33,7 @@ QJsonObject NotificationHelper::buildSummaryMessage(const QString &title,const Q
     c["persist"] = true;
     c["icon"] = icon;
     QJsonArray actions = QJsonArray();
-    QString actionUri = QStringLiteral("appid://whatsweb.pparent/whatsweb/current-user-version");
+    QString actionUri = QStringLiteral("appid://")+appid+"/"+activityid+"/current-user-version";
     actions.append(actionUri);
     c["actions"] = actions;
 
@@ -50,10 +51,10 @@ QJsonObject NotificationHelper::buildSummaryMessage(const QString &title,const Q
 bool NotificationHelper::sendJSON(const QJsonObject &message)
 {
     QDBusMessage msg = QDBusMessage::createMethodCall(POSTAL_SERVICE,
-                                                      makePath(PUSH_APP_ID),
+                                                      makePath(push_app_id),
                                                       POSTAL_IFACE,
                                                       "Post");
-    msg << PUSH_APP_ID;
+    msg << push_app_id;
     QByteArray data = QJsonDocument(message).toJson(QJsonDocument::Compact);
     msg << QString::fromUtf8(data);
 
@@ -76,10 +77,10 @@ bool NotificationHelper::updateCount(const int count)
 {
     bool visible = count != 0;
     QDBusMessage message = QDBusMessage::createMethodCall(POSTAL_SERVICE,
-                                                          makePath(PUSH_APP_ID),
+                                                          makePath(push_app_id),
                                                           POSTAL_IFACE,
                                                           "SetCounter");
-    message << PUSH_APP_ID << count << visible;
+    message << push_app_id << count << visible;
     bool result = m_conn.send(message);
     if (result) {
         qDebug() << "[COUNT] >> Updated.";
@@ -127,3 +128,8 @@ void NotificationHelper::showNotificationMessage(const QString &title,const QStr
     sendJSON(buildSummaryMessage(title,message));
 }
 
+QString NotificationHelper::get_push_app_id() 
+{ return push_app_id; }
+   
+void NotificationHelper::set_push_app_id(QString value)
+{ push_app_id = value; }
