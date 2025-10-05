@@ -23,7 +23,7 @@ MainView {
   }
     
   //Function to allow notification while avoiding flooding at the same time
-  function notifyOnce(title,msg) {
+  function notifyBackup(title,msg) {
       var currentTimestamp=Date.now();  // timestamp en millisecondes
         if (currentTimestamp - lastNotifyTimestamp > 5000) {
             //Send notifications only if app is not active
@@ -34,15 +34,23 @@ MainView {
             }
         }
   }
+  
+  function notifyMain(title,msg) {
+      if (!(Qt.application.active))
+      { 
+        lastNotifyTimestamp=Date.now();  // timestamp en millisecondes
+        notifier.showNotificationMessage(title,msg);
+      }
+  }  
 
 
   Timer {
     id: timer1
     running: false
     repeat: false
-    interval: 300
+    interval: 2000
     onTriggered: function() {
-    notifyOnce("New Whatsapp Audio Notification","")
+    notifyBackup("New Whatsapp Audio Notification","")
     timer1.running = false;
     }
   }
@@ -51,10 +59,10 @@ MainView {
     id: timer2
     running: false
     repeat: false
-    interval: 100
+    interval: 1100
     property string msg: "notif"    
     onTriggered: function() {
-    notifyOnce(msg,"")
+    notifyBackup(msg,"")
     timer2.running = false;
     }
   }
@@ -68,18 +76,6 @@ MainView {
   //theme.name: "Ubuntu.Components.Themes.SuruDark"
   applicationName: "whatsweb.pparent"
   backgroundColor : "transparent"
-  
-  // anchors {
-  //   fill: parent
-  //   bottomMargin: UbuntuApplication.inputMethod.visible ? UbuntuApplication.inputMethod.keyboardRectangle.height/(units.gridUnit / 8) : 0
-  //   Behavior on bottomMargin {
-  //       NumberAnimation {
-  //           duration: 175
-  //           easing.type: Easing.OutQuad
-  //       }
-  //   }
-  // }
- // anchorToKeyboard: true
 
 
   property list<ContentItem> importItems
@@ -148,11 +144,8 @@ MainView {
           //  Notification based on web desktop notifications (Higher priority)
           //----------------------------------------------------------------------   
           onPresentNotification: (notification) => {
-                 notifyOnce(notification.title, notification.message);
+                 notifyMain(notification.title, notification.message);
           }
-          // onPermissionRequested: function(request) {
-          //       request.accept(); // Autoriser par défaut
-          // }
         }//End WebEngineProfile
         
         
@@ -161,8 +154,6 @@ MainView {
           centerIn: parent.verticalCenter
         }
        url: "https://web.whatsapp.com"
-      //url: "https://www.bennish.net/web-notifications.html"
-      // url: "https://librecalc.fr/test3.html"
         userScripts: [
           WebEngineScript {
             injectionPoint: WebEngineScript.DocumentCreation
