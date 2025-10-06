@@ -211,11 +211,60 @@ MainView {
                 //Send notification in 50ms through timer1
                 timer1.running = true;
             }
+            if (message.startsWith("[ClipBoardCopy]")) {
+                //Send notification in 50ms through timer1
+                textEdit.text = message.replace(/^\[ClipBoardCopy\]\s*/, "")
+                textEdit.selectAll()
+                textEdit.copy()
+                toast.show("Message copied to clipboard!")
+            }
         }
         
         
       } //End webview--------------------------------------------------------------------------------------------
-    
+     TextEdit{
+        id: textEdit
+        visible: false
+      }
+Rectangle {
+    id: toast
+    radius: 8
+    color: "#d9fdd3"
+    z:100
+    opacity: 0
+    visible: false
+    anchors.horizontalCenter: parent.horizontalCenter
+    anchors.bottom: parent.bottom
+    anchors.bottomMargin: 10
+   // La taille s'adapte automatiquement au texte
+    implicitWidth: toastText.width + 24
+    implicitHeight: toastText.height + 10
+
+    Text {
+        id: toastText
+        color: "black"
+        font.pixelSize: 14
+        font.bold: true
+        padding: 12
+    }
+
+    Behavior on opacity { NumberAnimation { duration: 300 } }
+
+    Timer {
+        id: timer
+        repeat: false
+        interval: 2000
+        onTriggered: { toast.opacity = 0; Qt.callLater(() => toast.visible = false) }
+    }
+
+    function show(msg) {
+        toastText.text = msg
+        toast.visible = true
+        toast.opacity = 1
+        timer.restart()
+        shown()
+    }
+  }
       
     }
     

@@ -7,6 +7,35 @@
 // @include       https://*.whatsapp.com/*
 // ==/UserScript==
 
+
+// Ensemble pour garder la trace des div déjà sélectionnées
+var copiedMessage1;
+var copiedMessage2;
+
+document.addEventListener("touchend", () => {
+  const selection = window.getSelection();
+  const selectedText = selection.toString().trim();
+  if (selectedText.length > 0) {
+  const node = selection.anchorNode;
+  const div = node?.nodeType === 1 ? node.closest("div") : node?.parentElement?.closest("div");
+  
+ 
+    if (div && !div.isContentEditable && copiedMessage1!=div&& copiedMessage2!=div) {
+        copiedMessage1=div;
+        copiedMessage2=div;
+          const range = document.createRange();
+          range.selectNodeContents(div);
+          selection.removeAllRanges();
+          selection.addRange(range);
+          console.log("[ClipBoardCopy]" + selection.toString().trim());
+          selection.removeAllRanges();
+    }
+  }
+
+  
+});
+    
+    
 // Declare variables
 updatenotificacion = 0;
 allownotification = 0;
@@ -91,6 +120,13 @@ window.addEventListener("click", function() {
     lastClickEditable=1;
   }
 
+  
+  const selection = window.getSelection();
+  const selectedText = selection.toString().trim();
+  if (selectedText.length == 0) {
+    if (copiedMessage1) copiedMessage1 = null;
+    else copiedMessage2 = null;
+  }
 
 	
   // First if to resize when sending a file/image/video/document
@@ -232,7 +268,7 @@ function addBackButton(){
   if ( check == 0 ) {
     addCss(".back_button span { display:block; height: 100%; width: 100%;}.back_button {  z-index:200; width:37px; height:45px; } html[dir] .back_button { border-radius:50%; } html[dir=ltr] .back_button { right:11px } html[dir=rtl] .back_button { left:11px } .back_button path { fill:#000000; fill-opacity:1 } .svg_back { transform: rotate(90deg); height: 100%;}");
     
-  	addJS('window.onscroll = function() {myFunction()}; var navbar = document.getElementById("navbar"); var sticky = navbar.offsetTop; function myFunction() { if (window.pageYOffset >= sticky) { navbar.classList.add("sticky") } else { navbar.classList.remove("sticky"); } } ');
+  	// addJS('window.onscroll = function() {myFunction()}; var navbar = document.getElementById("navbar"); var sticky = navbar.offsetTop; function myFunction() { if (window.pageYOffset >= sticky) { navbar.classList.add("sticky") } else { navbar.classList.remove("sticky"); } } ');
 
     var newHTML         = document.createElement('div');
     newHTML.className += "back_button";
