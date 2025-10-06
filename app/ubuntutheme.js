@@ -140,7 +140,7 @@ function main(){
   //Avoid opening the keyboard when entering a chat
   document.body.addEventListener('focusin', (event) => {
   const el = event.target;
-    if ( lastClickEditable == 0 )
+    if ( lastClickEditable == 0 && el.isContentEditable)
     {
       el.blur();
     }
