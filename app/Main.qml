@@ -214,9 +214,10 @@ MainView {
             if (message.startsWith("[ClipBoardCopy]")) {
                 //Send notification in 50ms through timer1
                 textEdit.text = message.replace(/^\[ClipBoardCopy\]\s*/, "")
+                //textEdit.text = message
                 textEdit.selectAll()
                 textEdit.copy()
-                toast.show("Message copied to clipboard!")
+                toast.show("✅ Message copied to clipboard!")
             }
         }
         
@@ -233,22 +234,39 @@ Rectangle {
     z:100
     opacity: 0
     visible: false
-    anchors.horizontalCenter: parent.horizontalCenter
     anchors.bottom: parent.bottom
-    anchors.bottomMargin: 10
+    anchors.left: parent.left 
+    anchors.bottomMargin: 14
+    anchors.leftMargin: 100
    // La taille s'adapte automatiquement au texte
-    implicitWidth: toastText.width + 24
-    implicitHeight: toastText.height + 10
+    implicitWidth: toastRow.width + 24
+    implicitHeight: toastRow.height + 3
 
-    Text {
-        id: toastText
-        color: "black"
-        font.pixelSize: 14
-        font.bold: true
+    Row {
+        id: toastRow
+        anchors.centerIn: parent
+        spacing: 7 // espace entre icône et texte
         padding: 12
+
+        Image {
+            id: toastIcon
+            source: Qt.resolvedUrl("Icons/check.png")  // ton icône ici
+            width: 20
+            height: 20
+            visible: source !== ""
+        }
+
+        Text {
+            id: toastText
+            color: "black"
+            font.pixelSize: 14
+            font.bold: true
+        }
     }
 
-    Behavior on opacity { NumberAnimation { duration: 300 } }
+    Behavior on opacity {
+        NumberAnimation { duration: 300 }
+    }
 
     Timer {
         id: timer

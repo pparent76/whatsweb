@@ -12,6 +12,8 @@
 var copiedMessage1;
 var copiedMessage2;
 
+
+
 document.addEventListener("touchend", () => {
   const selection = window.getSelection();
   const selectedText = selection.toString().trim();
@@ -21,13 +23,20 @@ document.addEventListener("touchend", () => {
   
  
     if (div && !div.isContentEditable && copiedMessage1!=div&& copiedMessage2!=div) {
-        copiedMessage1=div;
-        copiedMessage2=div;
+          copiedMessage1=div;
+          copiedMessage2=div;
           const range = document.createRange();
           range.selectNodeContents(div);
           selection.removeAllRanges();
           selection.addRange(range);
-          console.log("[ClipBoardCopy]" + selection.toString().trim());
+          const originalHTML = div.innerHTML;
+          div.querySelectorAll('img').forEach(img => {
+              const altText = img.getAttribute('alt') || '';
+              const textNode = document.createTextNode(altText);
+            img.replaceWith(textNode);
+          });          
+          console.log("[ClipBoardCopy]" + window.getSelection().toString());
+          div.innerHTML=originalHTML;
           selection.removeAllRanges();
     }
   }
