@@ -289,7 +289,11 @@ function addLeftMenuButtonToChatList(){
     
     document.querySelectorAll('header').forEach(header => {
         if (  header.querySelector('[data-icon="new-chat-outline"]') && ! header.querySelector('#added_menu_button') )
+        {
+         if ( header.firstChild.firstChild )
+            header.firstChild.firstChild .style.width="calc(100% - 40px)";
           header.prepend(newHTML); 
+        }
     });
 }
 
@@ -347,6 +351,8 @@ function inchatcontactandgroupinfo(){
       document.getElementById("app").getElementsByClassName('three')[0].childNodes[5].style.pointerEvents="none";
   }
 }
+
+
 
 //-----------------------------------------------------------------------------
 //                           Clean
