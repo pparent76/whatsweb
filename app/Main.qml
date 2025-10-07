@@ -217,8 +217,11 @@ MainView {
                 //textEdit.text = message
                 textEdit.selectAll()
                 textEdit.copy()
-                toast.show("✅ Message copied to clipboard!")
+                toast.show("Message copied to clipboard!")
             }
+            if (message.startsWith("[ShowDebug]")) {
+                toast.show(message.replace(/^\[ShowDebug\]\s*/, ""))
+            }            
         }
         
         
