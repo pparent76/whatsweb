@@ -122,90 +122,9 @@ var checkExist = setInterval(function() {
   }
 }, 1000);
 
-//------------------------------------------------------------
-//  Analize JS after every click on APP and execute Actions
-//------------------------------------------------------------
-window.addEventListener("click", function() {
-    console.log("Click")
-  
-  lastClickEditable=0
-  const grid = event.target.closest('[role="grid"]');
-  if (grid) {
-      if (lastClickContact==0)
-      {
-        // setTimeout(() => {
-        showchatWindow();
-        setTimeout(() => {
-        addBackButtonToChatView();
-          }, 200);
-      }
-      lastClickContact=1
-  }
-  else
-  {
-      lastClickContact=0
-      const el=event.target;
-      if ( el && el.isContentEditable) 
-      {
-      lastClickEditable=1;
-      }
-  }
-  
-
-
-
-  
-
-	
-  // // First if to resize when sending a file/image/video/document
-  // if (document.querySelector('input[accept="image/*,video/mp4,video/3gpp,video/quicktime"]')){
-  //   console.log("Adjust attachment width");
-  //   document.querySelector('.two').childNodes[1].childNodes[0].style.minWidth = "";
-  //   document.querySelector('.two').childNodes[1].childNodes[0].style.flex= "0 0 0";
-  //   document.querySelector('.two').childNodes[1].childNodes[1].style.minWidth = "90%";
-  // } else if (document.querySelector('input[accept="image/*,video/mp4,video/3gpp,video/quicktime"]') == null && document.querySelector('.two') !== undefined){
-  //   console.log("Restore profile width");
-  //   // Restore Profile and Settings menulef
-  //   document.querySelector('.two').childNodes[1].childNodes[0].style.minWidth = "100%";
-  //   document.querySelector('.two').childNodes[1].childNodes[0].style.flex= "0 0 45%";
-  //   document.querySelector('.two').childNodes[1].childNodes[1].style.minWidth = "";
-  // } 
-  
-  if (document.getElementById("app").getElementsByClassName('three')[0] !== undefined){
-    if (document.getElementById("app").getElementsByClassName('three')[0].childNodes[5] !== undefined){
-      inchatcontactandgroupinfo();
-    }
-  }
-  
-  //For copy system
-  if ( lastClickContact != 1 )
-  {
-  const selection = window.getSelection();
-  const selectedText = selection.toString().trim();
-  if (selectedText.length == 0) {
-    if (copiedMessage1) copiedMessage1 = null;
-    else copiedMessage2 = null;
-  }
-  }
-
-
-  // if (document.querySelector('.two') !== undefined){
-  //   //variable para el menu "inchatcontactandgroupinfo"
-  // 	const inchatelements = document.querySelector('.two').childNodes;
-  //   if (inchatelements.length >= 5){
-  //     restoreinchatcontactandgroupinfo();
-  //   }
-  // }
-  
-  
-  //if (updatenotificacion == 0 || allownotification == 0){
-  //  disablenotifications();
-  //}
-  
-});
-
 //----------------------------------------------------------------------
 //            Define all the functions to work on it
+//           (Called one time when main app is loaded)
 //----------------------------------------------------------------------
 function main(){
   console.log("Call main function")
@@ -260,23 +179,61 @@ function main(){
   Notification.requestPermission();
 }
 
+//------------------------------------------------------------
+//  Analize JS after every click on APP and execute Actions
+//------------------------------------------------------------
+window.addEventListener("click", function() {
+    console.log("Click")
+  
+  lastClickEditable=0
+  const grid = event.target.closest('[role="grid"]');
+  if (grid) {
+      if (lastClickContact==0)
+      {
+        showchatWindow();
+        setTimeout(() => {
+        addBackButtonToChatView();
+          }, 200);
+      }
+      lastClickContact=1
+  }
+  else
+  {
+      lastClickContact=0
+      const el=event.target;
+      if ( el && el.isContentEditable) 
+      {
+      lastClickEditable=1;
+      }
+  }
+  
 
-// function navigation() {
-//   var check = 0;
-//   var checkExist = setInterval(function() {
-//     if (document.querySelector('.two').childNodes[3].style.display === null) {
-//       console.log("Exists!");
-//       if ( check == 0 ) {
-//         clearInterval(checkExist);
-//         addBackButtonToChatView();
-//       }
-//       check = 1;
-//     }
-//   }, 200); 
-// }
+  // Handle contactInfo Openned panel
+  if (document.getElementById("app").getElementsByClassName('three')[0] !== undefined){
+    if (document.getElementById("app").getElementsByClassName('three')[0].childNodes[5] !== undefined){
+      inchatcontactandgroupinfo();
+    }
+  }
+  
+  //For Quick Copy to ClipBoard system
+  if ( lastClickContact != 1 )
+  {
+    const selection = window.getSelection();
+    const selectedText = selection.toString().trim();
+    if (selectedText.length == 0) {
+      if (copiedMessage1) copiedMessage1 = null;
+      else copiedMessage2 = null;
+    }
+  }
+
+  
+});
+
+
+
 
 //------------------------------------------------------------------------------------
-//          Function do display or hide left menu
+//          Function To display or hide left menu
 //------------------------------------------------------------------------------------
 function toggleLeftMenu(){
   if (document.querySelector('header')) {
@@ -284,11 +241,16 @@ function toggleLeftMenu(){
       {
         document.querySelector('header').style.display = 'block';
         document.querySelector('.two').childNodes[1].childNodes[0].style.minWidth = "90%"
+        document.querySelector('.two').childNodes[3].style.left= '15%';
       }
       else
       {
-        document.querySelector('header').style.display = 'none';
-        document.querySelector('.two').childNodes[1].childNodes[0].style.minWidth = "100%"        
+        document.querySelector('.two').childNodes[3].style.left= '0%';
+        setTimeout(() => {
+           document.querySelector('header').style.display = 'none';
+           document.querySelector('.two').childNodes[1].childNodes[0].style.minWidth = "100%"   
+        }, 500);
+  
       }
   }
 }
@@ -344,24 +306,22 @@ function addBackButtonToChatView(){
 //----------------------------------------------------------------------------
 function showchatlist(){
    //document.querySelector('.two').childNodes[3].style.visibility = 'visible';
-   document.querySelector('.two').childNodes[3].style.position= '';
-   document.querySelector('.two').childNodes[3].style.left= '';
+  document.querySelector('.two').childNodes[3].style.transition= "left 0.30s ease-in-out";
+   document.querySelector('.two').childNodes[3].style.position= 'absolute';
+   document.querySelector('.two').childNodes[3].style.left= '0';
 
 }
 
 function showchatWindow(){
    //document.querySelector('.two').childNodes[3].style.visibility = 'hidden'; 
+   document.querySelector('.two').childNodes[3].style.transition= "left 0.30s ease-in-out";
    document.querySelector('.two').childNodes[3].style.position= 'absolute'; 
    document.querySelector('.two').childNodes[3].style.left= "-100%";
-}
+  //Hide left menu
+   document.querySelector('header').style.display = 'none';
+   document.querySelector('.two').childNodes[1].childNodes[0].style.minWidth = "100%"    
 
-function settingspanel(){
-  if (document.querySelector('[data-testid="settings-drawer"]')){
-      document.querySelector('.two').childNodes[2].childNodes[0].style.maxWidth = "100%";
-      document.querySelector('.two').childNodes[2].childNodes[0].style.flex = "0 0 100%";
-  }
 }
-
 
 //-----------------------------------------------------------------------------
 //         Functions to handle contactInfo pannel
@@ -373,7 +333,6 @@ function inchatcontactandgroupinfo(){
       document.getElementById("app").getElementsByClassName('three')[0].childNodes[5].style.position= "absolute";
       document.getElementById("app").getElementsByClassName('three')[0].childNodes[5].style.width = "100%";
       document.getElementById("app").getElementsByClassName('three')[0].childNodes[5].style.maxWidth = "100%";  
-      document.getElementById("app").getElementsByClassName('three')[0].childNodes[5].classList.add('marque-speciale');
       document.getElementById("app").getElementsByClassName('three')[0].childNodes[5].style.pointerEvents="none";
   }
 }
@@ -394,8 +353,9 @@ function clean() {
 }
 
 
-
-
+//-----------------------------------------------------------------------
+//                     End of main thing
+//-----------------------------------------------------------------------
 
 //-----------------------------------------------------------------------
 //              Detect Audio évents to trigger Notifications
