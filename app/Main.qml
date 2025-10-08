@@ -139,6 +139,7 @@ MainView {
           id: webContext
           httpUserAgent: "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/87.0.4280.144 Safari/537.36"
           storageName: "Storage"
+          downloadPath: "/home/phablet/.cache/whatsweb.pparent/Download/"
           persistentStoragePath: "/home/phablet/.cache/whatsweb.pparent/QtWebEngine"
           //----------------------------------------------------------------------
           //  Notification based on web desktop notifications (Higher priority)
@@ -146,8 +147,21 @@ MainView {
           onPresentNotification: (notification) => {
                  notifyMain(notification.title, notification.message);
           }
+          
+          onDownloadRequested: {
+                //toast.show("Téléchargement demandé : " + downloadItem.url)
+                // On choisit un chemin temporaire
+                //downloadItem.path = "/home/phablet/.cache/whatsweb.pparent/Download/" + downloadItem.downloadFileName
+                downloadItem.accept()
+                //downloadItem.finished.connect(function() {
+                //console.log("Téléchargement terminé :", downloadItem.path)
+                //Qt.openUrlExternally("file://" + downloadItem.path)
+                //})
+          }
+        
         }//End WebEngineProfile
         
+  
         
         anchors {
           fill:parent
@@ -166,13 +180,15 @@ MainView {
           request.accepted = true;
           var importPage = mainPageStack.push(Qt.resolvedUrl("ImportPage.qml"),{"contentType": ContentType.All, "handler": ContentHandler.Source})
           importPage.imported.connect(function(fileUrl) {
-            console.log(String(fileUrl).replace("file://", ""));
+            console.log(String(fileUrl).replace("file://", ""))
             request.dialogAccept(String(fileUrl).replace("file://", ""));
-            mainPageStack.push(pageMain)
+            mainPageStack.pop(importPage)
+            toast.show(String(fileUrl).replace("file://", ""));
           })
         }
         onNewViewRequested: {
             request.action = WebEngineNavigationRequest.IgnoreRequest
+            //toast.show(request.requestedUrl);
             if(request.userInitiated) {
                 Qt.openUrlExternally(request.requestedUrl)
             }
@@ -223,7 +239,6 @@ MainView {
                 toast.show(message.replace(/^\[ShowDebug\]\s*/, ""))
             }            
         }
-        
         
       } //End webview--------------------------------------------------------------------------------------------
      TextEdit{

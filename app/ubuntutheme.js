@@ -95,7 +95,10 @@ document.addEventListener('readystatechange', event => {
     }
 });
 
-// First resize after loading the web
+//-----------------------------------------------------
+//         First resize after loading the web 
+//    (temporary timeout only running at the begining)
+//------------------------------------------------------
 var check = 0;
 var checkExist = setInterval(function() {
   
@@ -107,7 +110,7 @@ var checkExist = setInterval(function() {
       document.getElementById('app').getElementsByClassName('landing-wrapper')[0].style.minWidth = 'auto';
       document.getElementById('app').getElementsByClassName('landing-header')[0].style.display = 'none';
     }
-    if (document.getElementById("app").getElementsByClassName('two')[0].childNodes.length) {
+    if (document.querySelector('.two').childNodes.length) {
       console.log("Exists!");
       if ( check == 0 ) {
         clearInterval(checkExist);
@@ -119,45 +122,54 @@ var checkExist = setInterval(function() {
   }
 }, 1000);
 
-// Analize JS after every click on APP and execute Actions
+//------------------------------------------------------------
+//  Analize JS after every click on APP and execute Actions
+//------------------------------------------------------------
 window.addEventListener("click", function() {
     console.log("Click")
   
+  lastClickEditable=0
   const grid = event.target.closest('[role="grid"]');
   if (grid) {
+      if (lastClickContact==0)
+      {
+        // setTimeout(() => {
+        showchatWindow();
+        setTimeout(() => {
+        addBackButtonToChatView();
+          }, 200);
+      }
       lastClickContact=1
-      document.getElementById("app").getElementsByClassName('two')[0].childNodes[4].style.display = '';      
-      document.getElementById("app").getElementsByClassName('two')[0].childNodes[3].style.display = 'none';
-      addBackButtonToChatView();
   }
   else
   {
       lastClickContact=0
+      const el=event.target;
+      if ( el && el.isContentEditable) 
+      {
+      lastClickEditable=1;
+      }
   }
   
-  lastClickEditable=0
-  const el=event.target;
-  if ( el && el.isContentEditable) 
-  {
-    lastClickEditable=1;
-  }
+
+
 
   
 
 	
-  // First if to resize when sending a file/image/video/document
-  if (document.querySelector('input[accept="image/*,video/mp4,video/3gpp,video/quicktime"]')){
-    console.log("Adjust attachment width");
-    document.getElementById("app").getElementsByClassName('two')[0].childNodes[1].childNodes[0].style.minWidth = "";
-    document.getElementById("app").getElementsByClassName('two')[0].childNodes[1].childNodes[0].style.flex= "0 0 0";
-    document.getElementById("app").getElementsByClassName('two')[0].childNodes[1].childNodes[1].style.minWidth = "90%";
-  } else if (document.querySelector('input[accept="image/*,video/mp4,video/3gpp,video/quicktime"]') == null && document.getElementById("app").getElementsByClassName('two')[0] !== undefined){
-    console.log("Restore profile width");
-    // Restore Profile and Settings menulef
-    document.getElementById("app").getElementsByClassName('two')[0].childNodes[1].childNodes[0].style.minWidth = "100%";
-    document.getElementById("app").getElementsByClassName('two')[0].childNodes[1].childNodes[0].style.flex= "0 0 45%";
-    document.getElementById("app").getElementsByClassName('two')[0].childNodes[1].childNodes[1].style.minWidth = "";
-  } 
+  // // First if to resize when sending a file/image/video/document
+  // if (document.querySelector('input[accept="image/*,video/mp4,video/3gpp,video/quicktime"]')){
+  //   console.log("Adjust attachment width");
+  //   document.querySelector('.two').childNodes[1].childNodes[0].style.minWidth = "";
+  //   document.querySelector('.two').childNodes[1].childNodes[0].style.flex= "0 0 0";
+  //   document.querySelector('.two').childNodes[1].childNodes[1].style.minWidth = "90%";
+  // } else if (document.querySelector('input[accept="image/*,video/mp4,video/3gpp,video/quicktime"]') == null && document.querySelector('.two') !== undefined){
+  //   console.log("Restore profile width");
+  //   // Restore Profile and Settings menulef
+  //   document.querySelector('.two').childNodes[1].childNodes[0].style.minWidth = "100%";
+  //   document.querySelector('.two').childNodes[1].childNodes[0].style.flex= "0 0 45%";
+  //   document.querySelector('.two').childNodes[1].childNodes[1].style.minWidth = "";
+  // } 
   
   if (document.getElementById("app").getElementsByClassName('three')[0] !== undefined){
     if (document.getElementById("app").getElementsByClassName('three')[0].childNodes[5] !== undefined){
@@ -165,17 +177,21 @@ window.addEventListener("click", function() {
     }
   }
   
-    const selection = window.getSelection();
+  //For copy system
+  if ( lastClickContact != 1 )
+  {
+  const selection = window.getSelection();
   const selectedText = selection.toString().trim();
   if (selectedText.length == 0) {
     if (copiedMessage1) copiedMessage1 = null;
     else copiedMessage2 = null;
   }
+  }
 
 
-  // if (document.getElementById("app").getElementsByClassName('two')[0] !== undefined){
+  // if (document.querySelector('.two') !== undefined){
   //   //variable para el menu "inchatcontactandgroupinfo"
-  // 	const inchatelements = document.getElementById("app").getElementsByClassName('two')[0].childNodes;
+  // 	const inchatelements = document.querySelector('.two').childNodes;
   //   if (inchatelements.length >= 5){
   //     restoreinchatcontactandgroupinfo();
   //   }
@@ -193,10 +209,13 @@ window.addEventListener("click", function() {
 //----------------------------------------------------------------------
 function main(){
   console.log("Call main function")
-  document.getElementById("app").getElementsByClassName('two')[0].childNodes[4].style.display = 'none';
-  // document.getElementById("app").getElementsByClassName('two')[0].childNodes[1].childNodes[2].style.display = 'none';
-  document.getElementById("app").getElementsByClassName('two')[0].childNodes[2].style.width = "0%"
-  document.getElementById("app").getElementsByClassName('two')[0].childNodes[3].style.minWidth = "100%"
+ // document.querySelector('.two').childNodes[4].style.display = 'none';
+  // document.querySelector('.two').childNodes[1].childNodes[2].style.display = 'none';
+  document.querySelector('.two').childNodes[2].style.width = "0%"
+  
+  showchatlist();  
+  document.querySelector('.two').childNodes[3].style.minWidth = "100%"
+  document.querySelector('.two').childNodes[4].style.minWidth = "100%"  
   document.getElementById('app').getElementsByClassName('two')[0].style.minWidth = 'auto';
   document.getElementById('app').getElementsByClassName('two')[0].style.minHeight = 'auto';
   
@@ -216,7 +235,7 @@ function main(){
    }
    
   // Resize Profile and Settings menu
-  document.getElementById("app").getElementsByClassName('two')[0].childNodes[1].childNodes[0].style.minWidth = "100%"
+  document.querySelector('.two').childNodes[1].childNodes[0].style.minWidth = "100%"
     
   //Fix emoticons panel
   const container = document.getElementById('expressions-panel-container');
@@ -242,19 +261,19 @@ function main(){
 }
 
 
-function navigation() {
-  var check = 0;
-  var checkExist = setInterval(function() {
-    if (document.getElementById("app").getElementsByClassName('two')[0].childNodes[3].style.display === null) {
-      console.log("Exists!");
-      if ( check == 0 ) {
-        clearInterval(checkExist);
-        addBackButtonToChatView();
-      }
-      check = 1;
-    }
-  }, 200); 
-}
+// function navigation() {
+//   var check = 0;
+//   var checkExist = setInterval(function() {
+//     if (document.querySelector('.two').childNodes[3].style.display === null) {
+//       console.log("Exists!");
+//       if ( check == 0 ) {
+//         clearInterval(checkExist);
+//         addBackButtonToChatView();
+//       }
+//       check = 1;
+//     }
+//   }, 200); 
+// }
 
 //------------------------------------------------------------------------------------
 //          Function do display or hide left menu
@@ -264,12 +283,12 @@ function toggleLeftMenu(){
       if ( document.querySelector('header').style.display == 'none' )
       {
         document.querySelector('header').style.display = 'block';
-        document.getElementById("app").getElementsByClassName('two')[0].childNodes[1].childNodes[0].style.minWidth = "90%"
+        document.querySelector('.two').childNodes[1].childNodes[0].style.minWidth = "90%"
       }
       else
       {
         document.querySelector('header').style.display = 'none';
-        document.getElementById("app").getElementsByClassName('two')[0].childNodes[1].childNodes[0].style.minWidth = "100%"        
+        document.querySelector('.two').childNodes[1].childNodes[0].style.minWidth = "100%"        
       }
   }
 }
@@ -324,15 +343,22 @@ function addBackButtonToChatView(){
 //         Function to show main chat list view
 //----------------------------------------------------------------------------
 function showchatlist(){
-  document.getElementById("app").getElementsByClassName('two')[0].childNodes[3].style.display = 'block';
-  document.getElementById("app").getElementsByClassName('two')[0].childNodes[4].style.display = 'none'; 
+   //document.querySelector('.two').childNodes[3].style.visibility = 'visible';
+   document.querySelector('.two').childNodes[3].style.position= '';
+   document.querySelector('.two').childNodes[3].style.left= '';
+
 }
 
+function showchatWindow(){
+   //document.querySelector('.two').childNodes[3].style.visibility = 'hidden'; 
+   document.querySelector('.two').childNodes[3].style.position= 'absolute'; 
+   document.querySelector('.two').childNodes[3].style.left= "-100%";
+}
 
 function settingspanel(){
   if (document.querySelector('[data-testid="settings-drawer"]')){
-      document.getElementById("app").getElementsByClassName('two')[0].childNodes[2].childNodes[0].style.maxWidth = "100%";
-      document.getElementById("app").getElementsByClassName('two')[0].childNodes[2].childNodes[0].style.flex = "0 0 100%";
+      document.querySelector('.two').childNodes[2].childNodes[0].style.maxWidth = "100%";
+      document.querySelector('.two').childNodes[2].childNodes[0].style.flex = "0 0 100%";
   }
 }
 
