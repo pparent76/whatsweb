@@ -8,6 +8,15 @@
 // ==/UserScript==
 
 
+const X = {
+  chatList: () => document.querySelector('.two').childNodes[3],
+  chatWindow: () => document.querySelector('.two').childNodes[4],
+  leftMenu: () => document.querySelector('header'),
+  contactInfo: () => document.getElementById("app").getElementsByClassName('three')[0].childNodes[5],
+  smileyPanel: () => document.querySelector('#expressions-panel-container > :first-child > :first-child'),
+  settingMenus: () => document.querySelector('.two').childNodes[2]
+// ?????= document.querySelector('.two').childNodes[1]  
+};
 
 //-------------------------------------------------------------------------------------
 //                             Quick ClipBoard code
@@ -128,16 +137,16 @@ var checkExist = setInterval(function() {
 //----------------------------------------------------------------------
 function main(){
   console.log("Call main function")
- // document.querySelector('.two').childNodes[4].style.display = 'none';
+ // X.chatList().style.display = 'none';
   // document.querySelector('.two').childNodes[1].childNodes[2].style.display = 'none';
-  document.querySelector('.two').childNodes[2].style.width = "0%"
+  X.settingMenus().style.width="0";
   
   showchatlist();  
-  document.querySelector('.two').childNodes[3].style.minWidth = "100%"
-  document.querySelector('.two').childNodes[4].style.minWidth = "100%"  
-  document.getElementById('app').getElementsByClassName('two')[0].style.minWidth = 'auto';
-  document.getElementById('app').getElementsByClassName('two')[0].style.minHeight = 'auto';
-  
+  X.chatList().style.minWidth = "100%"
+  X.chatWindow().style.minWidth = "100%"  
+   document.getElementById('app').getElementsByClassName('two')[0].style.minWidth = 'auto';
+   document.getElementById('app').getElementsByClassName('two')[0].style.minHeight = 'auto';
+//   
   //Avoid opening the keyboard when entering a chat
   document.body.addEventListener('focusin', (event) => {
   const el = event.target;
@@ -149,12 +158,12 @@ function main(){
 
   addLeftMenuButtonToChatList();
   
-   if (document.querySelector('header')) {
-     document.querySelector('header').style.display = 'none';
+   if (X.leftMenu()) {
+     X.leftMenu().style.display = 'none';
    }
    
   // Resize Profile and Settings menu
-  document.querySelector('.two').childNodes[1].childNodes[0].style.minWidth = "100%"
+ // document.querySelector('.two').childNodes[1].childNodes[0].style.minWidth = "100%"
     
   //Fix emoticons panel
   const container = document.getElementById('expressions-panel-container');
@@ -162,12 +171,12 @@ function main(){
     const observer = new MutationObserver((mutationsList) => {
       for (const mutation of mutationsList) {
         
-          document.querySelector('#expressions-panel-container > :first-child > :first-child').style.transform= 'scale(0.7)';
-          document.querySelector('#expressions-panel-container > :first-child > :first-child').style.left= '2%'; 
+          X.smileyPanel().style.transform= 'scale(0.7)';
+          X.smileyPanel().style.left= '2%'; 
           setTimeout(() => {
-          document.querySelector('#expressions-panel-container > :first-child > :first-child').style.transformOrigin = "left bottom"; 
-          document.querySelector('#expressions-panel-container > :first-child > :first-child').style.transform= 'scale(0.7)';
-          document.querySelector('#expressions-panel-container > :first-child > :first-child').style.left= '2%'; 
+          X.smileyPanel().style.transformOrigin = "left bottom"; 
+          X.smileyPanel().style.transform= 'scale(0.7)';
+          X.smileyPanel().style.left= '2%'; 
         
         }, 300);
       }
@@ -210,7 +219,7 @@ window.addEventListener("click", function() {
 
   // Handle contactInfo Openned panel
   if (document.getElementById("app").getElementsByClassName('three')[0] !== undefined){
-    if (document.getElementById("app").getElementsByClassName('three')[0].childNodes[5] !== undefined){
+    if (X.contactInfo() !== undefined){
       inchatcontactandgroupinfo();
     }
   }
@@ -236,18 +245,30 @@ window.addEventListener("click", function() {
 //          Function To display or hide left menu
 //------------------------------------------------------------------------------------
 function toggleLeftMenu(){
-  if (document.querySelector('header')) {
-      if ( document.querySelector('header').style.display == 'none' )
+  if (X.leftMenu()) {
+      if ( X.leftMenu().style.display == 'none' )
       {
-        document.querySelector('header').style.display = 'block';
+        X.leftMenu().style.display = 'block';
         document.querySelector('.two').childNodes[1].childNodes[0].style.minWidth = "90%"
-        document.querySelector('.two').childNodes[3].style.left= '15%';
+        X.chatList().style.left= '';
+        X.chatList().style.position= 'static';
+
+        document.getElementById('app').getElementsByClassName('two')[0].style.minWidth = '';
+        document.getElementById('app').getElementsByClassName('two')[0].style.minHeight = '';
+        X.settingMenus().style.width="100%";
+        X.settingMenus().style.minWidth = "90%"
+        
       }
       else
       {
-        document.querySelector('.two').childNodes[3].style.left= '0%';
+        document.getElementById('app').getElementsByClassName('two')[0].style.minWidth = 'auto';
+        document.getElementById('app').getElementsByClassName('two')[0].style.minHeight = 'auto';
+        X.chatList().style.position= 'absolute';
+        X.chatList().style.left= '0';
+        X.settingMenus().style.minWidth = "0%"
+        X.settingMenus().style.width="0%";
         setTimeout(() => {
-           document.querySelector('header').style.display = 'none';
+           X.leftMenu().style.display = 'none';
            document.querySelector('.two').childNodes[1].childNodes[0].style.minWidth = "100%"   
         }, 500);
   
@@ -305,20 +326,20 @@ function addBackButtonToChatView(){
 //         Function to show main chat list view
 //----------------------------------------------------------------------------
 function showchatlist(){
-   //document.querySelector('.two').childNodes[3].style.visibility = 'visible';
-  document.querySelector('.two').childNodes[3].style.transition= "left 0.30s ease-in-out";
-   document.querySelector('.two').childNodes[3].style.position= 'absolute';
-   document.querySelector('.two').childNodes[3].style.left= '0';
+   //X.chatList().style.visibility = 'visible';
+  X.chatList().style.transition= "left 0.30s ease-in-out";
+   X.chatList().style.position= 'absolute';
+   X.chatList().style.left= '0';
 
 }
 
 function showchatWindow(){
-   //document.querySelector('.two').childNodes[3].style.visibility = 'hidden'; 
-   document.querySelector('.two').childNodes[3].style.transition= "left 0.30s ease-in-out";
-   document.querySelector('.two').childNodes[3].style.position= 'absolute'; 
-   document.querySelector('.two').childNodes[3].style.left= "-100%";
+   //X.chatList().style.visibility = 'hidden'; 
+   X.chatList().style.transition= "left 0.30s ease-in-out";
+   X.chatList().style.position= 'absolute'; 
+   X.chatList().style.left= "-100%";
   //Hide left menu
-   document.querySelector('header').style.display = 'none';
+   X.leftMenu().style.display = 'none';
    document.querySelector('.two').childNodes[1].childNodes[0].style.minWidth = "100%"    
 
 }
@@ -329,11 +350,11 @@ function showchatWindow(){
 
 function inchatcontactandgroupinfo(){
   // console.log("inchatcontactandgroupinfo")
-  if (document.getElementById("app").getElementsByClassName('three')[0].childNodes[5]){
-      document.getElementById("app").getElementsByClassName('three')[0].childNodes[5].style.position= "absolute";
-      document.getElementById("app").getElementsByClassName('three')[0].childNodes[5].style.width = "100%";
-      document.getElementById("app").getElementsByClassName('three')[0].childNodes[5].style.maxWidth = "100%";  
-      document.getElementById("app").getElementsByClassName('three')[0].childNodes[5].style.pointerEvents="none";
+  if (X.contactInfo()){
+      X.contactInfo().style.position= "absolute";
+      X.contactInfo().style.width = "100%";
+      X.contactInfo().style.maxWidth = "100%";  
+      X.contactInfo().style.pointerEvents="none";
   }
 }
 
