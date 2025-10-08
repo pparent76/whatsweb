@@ -16,6 +16,7 @@ const X = {
   smileyPanel: () => document.querySelector('#expressions-panel-container > :first-child > :first-child'),
   settingMenus: () => document.querySelector('.two').childNodes[2]
 // ?????= document.querySelector('.two').childNodes[1]  
+// ?????= document.getElementById('app').getElementsByClassName('two')[0]
 };
 
 //-------------------------------------------------------------------------------------
@@ -326,6 +327,8 @@ function addBackButtonToChatView(){
 //         Function to show main chat list view
 //----------------------------------------------------------------------------
 function showchatlist(){
+   document.activeElement.blur();
+  
    //X.chatList().style.visibility = 'visible';
   X.chatList().style.transition= "left 0.30s ease-in-out";
    X.chatList().style.position= 'absolute';
@@ -334,13 +337,20 @@ function showchatlist(){
 }
 
 function showchatWindow(){
+   document.activeElement.blur();
+  
    //X.chatList().style.visibility = 'hidden'; 
    X.chatList().style.transition= "left 0.30s ease-in-out";
    X.chatList().style.position= 'absolute'; 
    X.chatList().style.left= "-100%";
+   
   //Hide left menu
    X.leftMenu().style.display = 'none';
    document.querySelector('.two').childNodes[1].childNodes[0].style.minWidth = "100%"    
+   document.getElementById('app').getElementsByClassName('two')[0].style.minWidth = 'auto';
+   document.getElementById('app').getElementsByClassName('two')[0].style.minHeight = 'auto';
+   X.settingMenus().style.minWidth = "0%"
+   X.settingMenus().style.width="0%";   
 
 }
 
