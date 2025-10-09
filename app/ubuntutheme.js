@@ -1,9 +1,8 @@
 // ==UserScript==
 // @name          WhatsApp (Responsive mode)
-// @namespace     http://blog.alefnode.com
-// @description	  Whats App is now responsive
-// @author        Adrian Campos Garrido
-// @version       20240930
+// @description	  WhatsApp web is now responsive
+// @authors       Adrian Campos Garrido, Pierre Parent
+// @version       20251009
 // @include       https://*.whatsapp.com/*
 // ==/UserScript==
 
@@ -98,9 +97,6 @@ Notification.requestPermission();
       newCss.innerHTML = cssString;
       head.appendChild(newCss);
   }
-  
-
-  
   
 // Listeners to startup APP
 window.addEventListener("load", function(event) {
@@ -419,10 +415,6 @@ function clean() {
     const OrigAudio = window.Audio;
     window.Audio = function(src) {
       const a = new OrigAudio(src);
-      // try {
-      //   // log creation + src
-      //  // logAudioEvent("Audio constructed src=" + (src || ""));
-      // } catch(e){}
       // attach listeners to catch play
       a.addEventListener('play', function(){ logAudioEvent((a.currentSrc || a.src || "")); }, {passive:true});
       a.addEventListener('playing', function(){ logAudioEvent((a.currentSrc || a.src || "")); }, {passive:true});
