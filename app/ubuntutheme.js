@@ -14,9 +14,12 @@ const X = {
   leftMenu: () => document.querySelector('header'),
   contactInfo: () => document.getElementById("app").getElementsByClassName('three')[0].childNodes[5],
   smileyPanel: () => document.querySelector('#expressions-panel-container > :first-child > :first-child'),
-  settingMenus: () => document.querySelector('.two').childNodes[2]
+  settingMenus: () => document.querySelector('.two').childNodes[2],
+  uploadPannel: () => document.querySelector('.two').childNodes[2].childNodes[1],   
+  leftSettingPannel: () => document.querySelector('.two').childNodes[2].childNodes[0]   
 // ?????= document.querySelector('.two').childNodes[1]  
 // ?????= document.getElementById('app').getElementsByClassName('two')[0]
+// document.getElementById('app').getElementsByClassName('landing-wrapper')
 };
 
 //-------------------------------------------------------------------------------------
@@ -81,15 +84,7 @@ Notification.requestPermission();
       head.appendChild(newCss);
   }
   
-  function addJS(jsString) {
-      var head = document.getElementsByTagName('head')[0];
-      var newJS = document.createElement('script');
-      newJS.innerHTML = jsString;
-      head.appendChild(newJS);
-  }
-  
-  
-  
+
   
   
 // Listeners to startup APP
@@ -259,6 +254,11 @@ function toggleLeftMenu(){
         X.settingMenus().style.width="100%";
         X.settingMenus().style.minWidth = "90%"
         
+        
+        X.uploadPannel().style.width="";
+        X.uploadPannel().style.minWidth="";   
+        X.leftSettingPannel().style.display="";
+        
       }
       else
       {
@@ -349,8 +349,15 @@ function showchatWindow(){
    document.querySelector('.two').childNodes[1].childNodes[0].style.minWidth = "100%"    
    document.getElementById('app').getElementsByClassName('two')[0].style.minWidth = 'auto';
    document.getElementById('app').getElementsByClassName('two')[0].style.minHeight = 'auto';
-   X.settingMenus().style.minWidth = "0%"
-   X.settingMenus().style.width="0%";   
+   X.settingMenus().style.minWidth = "100%"
+   X.settingMenus().style.width="100%"; 
+   
+
+    X.uploadPannel().style.width="100%";
+    X.uploadPannel().style.minWidth="100%";   
+    X.leftSettingPannel().style.display="none";
+   // X.uploadPannel().style.minWidth="100%"; 
+   // X.uploadPannel().style.pointerEvents="none";   
 
 }
 

@@ -183,7 +183,6 @@ MainView {
             console.log(String(fileUrl).replace("file://", ""))
             request.dialogAccept(String(fileUrl).replace("file://", ""));
             mainPageStack.pop(importPage)
-            toast.show(String(fileUrl).replace("file://", ""));
           })
         }
         onNewViewRequested: {
