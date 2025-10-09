@@ -11,17 +11,22 @@
 const X = {
   //MainWrapper stuff (element class two)----------------------------------------------------
   mainWrapper: () => document.querySelector('.two'),  
-    //document.querySelector('.two').childNodes[1]
-    //OverlayMenus, includes leftMenus (Settings), uploadPannel(to upload photos/videos)
+    unkownSection1: () => document.querySelector('.two').childNodes[1],
+      unkownSection2: () => document.querySelector('.two').childNodes[1].childNodes[0],  
     overlayMenus: () => document.querySelector('.two').childNodes[2],
-      uploadPannel: () => document.querySelector('.two').childNodes[2].childNodes[1],   
-      leftSettingPannel: () => document.querySelector('.two').childNodes[2].childNodes[0],
+      uploadPannel: () => document.querySelector('.two').childNodes[2].childNodes[1], //(to upload photos/videos/document)    
+      leftSettingPannel: () => document.querySelector('.two').childNodes[2].childNodes[0], // leftMenus (Settings, status, community, profile, ...)
     chatList: () => document.querySelector('.two').childNodes[3],
     chatWindow: () => document.querySelector('.two').childNodes[4],
   //-------------------------------------------------------------------------------------------
-    
+
+  upperWrapper: () => document.querySelector('.three'),
+    contactInfo: () => document.querySelector('.three').childNodes[5],
+      
   leftMenu: () => document.querySelector('header'),
-  contactInfo: () => document.querySelector('.three').childNodes[5],
+
+  
+  smileyWrapper: () => document.getElementById('expressions-panel-container'),
   smileyPanel: () => document.querySelector('#expressions-panel-container > :first-child > :first-child'),
   
 
@@ -143,8 +148,6 @@ var checkExist = setInterval(function() {
 //----------------------------------------------------------------------
 function main(){
   console.log("Call main function")
- // X.chatList().style.display = 'none';
-  // document.querySelector('.two').childNodes[1].childNodes[2].style.display = 'none';
   X.overlayMenus().style.width="0";
   
   showchatlist();  
@@ -169,25 +172,24 @@ function main(){
    }
    
   // Resize Profile and Settings menu
- // document.querySelector('.two').childNodes[1].childNodes[0].style.minWidth = "100%"
+ // X.unkownSection2().style.minWidth = "100%"
     
   //Fix emoticons panel
-  const container = document.getElementById('expressions-panel-container');
-  if (container) {
+  if (X.smileyWrapper()) {
     const observer = new MutationObserver((mutationsList) => {
-      for (const mutation of mutationsList) {
-        
-          X.smileyPanel().style.transform= 'scale(0.7)';
-          X.smileyPanel().style.left= '2%'; 
-          setTimeout(() => {
+     // for (const mutation of mutationsList) {
           X.smileyPanel().style.transformOrigin = "left bottom"; 
           X.smileyPanel().style.transform= 'scale(0.7)';
           X.smileyPanel().style.left= '2%'; 
-        
-        }, 300);
-      }
+          setTimeout(() => {
+          X.smileyPanel().style.transform= 'scale(0.7)';
+          }, 300);
+          setTimeout(() => {
+          X.smileyPanel().style.transform= 'scale(0.7)';
+          }, 1000);          
+      //}
     });
-    observer.observe(container, { childList: true, subtree: true });
+    observer.observe(X.smileyWrapper(), { childList: true, subtree: true });
   }
 
   //Request by default webnofications permission
@@ -224,7 +226,7 @@ window.addEventListener("click", function() {
   
 
   // Handle contactInfo Openned panel
-  if (document.getElementById("app").getElementsByClassName('three')[0] !== undefined){
+  if (X.upperWrapper() !== undefined){
     if (X.contactInfo() !== undefined){
       inchatcontactandgroupinfo();
     }
@@ -255,12 +257,10 @@ function toggleLeftMenu(){
       if ( X.leftMenu().style.display == 'none' )
       {
         X.leftMenu().style.display = 'block';
-        document.querySelector('.two').childNodes[1].childNodes[0].style.minWidth = "90%"
+        X.unkownSection2().style.minWidth = "90%"
         X.chatList().style.left= '';
         X.chatList().style.position= 'static';
 
-        X.mainWrapper().style.minWidth = '';
-        X.mainWrapper().style.minHeight = '';
         X.overlayMenus().style.width="100%";
         X.overlayMenus().style.minWidth = "90%"
         
@@ -268,19 +268,19 @@ function toggleLeftMenu(){
         X.uploadPannel().style.width="";
         X.uploadPannel().style.minWidth="";   
         X.leftSettingPannel().style.display="";
+        X.leftSettingPannel().style.maxWidth="85%";            
+        X.leftSettingPannel().style.minWidth="85%";    
         
       }
       else
       {
-        X.mainWrapper().style.minWidth = 'auto';
-        X.mainWrapper().style.minHeight = 'auto';
         X.chatList().style.position= 'absolute';
         X.chatList().style.left= '0';
         X.overlayMenus().style.minWidth = "0%"
         X.overlayMenus().style.width="0%";
         setTimeout(() => {
            X.leftMenu().style.display = 'none';
-           document.querySelector('.two').childNodes[1].childNodes[0].style.minWidth = "100%"   
+           X.unkownSection2().style.minWidth = "100%"   
         }, 500);
   
       }
@@ -356,18 +356,14 @@ function showchatWindow(){
    
   //Hide left menu
    X.leftMenu().style.display = 'none';
-   document.querySelector('.two').childNodes[1].childNodes[0].style.minWidth = "100%"    
-   X.mainWrapper().style.minWidth = 'auto';
-   X.mainWrapper().style.minHeight = 'auto';
+   X.unkownSection2().style.minWidth = "100%"    
    X.overlayMenus().style.minWidth = "100%"
    X.overlayMenus().style.width="100%"; 
    
 
     X.uploadPannel().style.width="100%";
     X.uploadPannel().style.minWidth="100%";   
-    X.leftSettingPannel().style.display="none";
-   // X.uploadPannel().style.minWidth="100%"; 
-   // X.uploadPannel().style.pointerEvents="none";   
+    X.leftSettingPannel().style.display="none"; 
 
 }
 
@@ -451,85 +447,8 @@ function clean() {
           logAudioEvent( src);
         } catch(e){}
         return origPlay.apply(this, arguments);
-      };
-      // also listen to src changes (attribute)
-      const origSetAttribute = Element.prototype.setAttribute;
-      Element.prototype.setAttribute = function(name, value) {
-        try {
-          if ((this.tagName || "").toLowerCase() === "audio" && name === "src") {
-            logAudioEvent(value);
-          }
-        } catch(e){}
-        return origSetAttribute.apply(this, arguments);
-      };
-      // intercept setting .src
-      try {
-        const desc = Object.getOwnPropertyDescriptor(HTMLMediaElement.prototype, 'src');
-        if (desc && desc.set && !desc.set.__hooked__) {
-          const origSetter = desc.set;
-          desc.set = function(v) {
-            try { logAudioEvent(v); } catch(e){}
-            return origSetter.call(this, v);
-          };
-          Object.defineProperty(HTMLMediaElement.prototype, 'src', desc);
-          desc.set.__hooked__ = true;
-        }
-      } catch(e){}
-    }
-  } catch(e){}
-
-  // 3) Intercepter WebAudio: AudioContext.prototype.createBufferSource + start()
-  try {
-    const AC = window.AudioContext || window.webkitAudioContext;
-    if (AC) {
-      const origCreate = AC.prototype.createBufferSource;
-      AC.prototype.createBufferSource = function() {
-        const srcNode = origCreate.apply(this, arguments);
-        try {
-          const origStart = srcNode.start;
-          srcNode.start = function(/*when, offset, duration*/) {
-            try {
-              // attempt to describe the buffer (duration) or associated info
-              const dur = srcNode.buffer ? srcNode.buffer.duration : "unknown";
-              logAudioEvent("WebAudio start bufferDuration=" + dur);
-            } catch(e){}
-            return origStart.apply(this, arguments);
-          };
-        } catch(e){}
-        return srcNode;
-      };
-    }
-  } catch(e){}
-
-  // 4) MutationObserver to catch dynamically added <audio> elements
-  try {
-    const mo = new MutationObserver(function(mutations) {
-      for (const m of mutations) {
-        for (const n of m.addedNodes || []) {
-          try {
-            if (n && n.tagName && n.tagName.toLowerCase() === 'audio') {
-              const a = n;
-              logAudioEvent( (a.currentSrc || a.src || ""));
-              a.addEventListener('play', function(){ logAudioEvent((a.currentSrc||a.src||"")); }, {passive:true});
-            }
-          } catch(e){}
-        }
       }
-    });
-    mo.observe(document, { childList: true, subtree: true });
+    }
   } catch(e){}
 
-  // 5) Optional: intercept creation via createElement
-  try {
-    const origCreate = Document.prototype.createElement;
-    Document.prototype.createElement = function(tagName) {
-      const node = origCreate.apply(this, arguments);
-      try {
-        if ((tagName||"").toLowerCase() === 'audio') {
-          node.addEventListener('play', function(){ logAudioEvent(  (node.currentSrc||node.src||"")); }, {passive:true});
-        }
-      } catch(e){}
-      return node;
-    };
-  } catch(e){}
 })();
