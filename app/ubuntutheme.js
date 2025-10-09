@@ -9,17 +9,27 @@
 
 
 const X = {
-  chatList: () => document.querySelector('.two').childNodes[3],
-  chatWindow: () => document.querySelector('.two').childNodes[4],
+  //MainWrapper stuff (element class two)----------------------------------------------------
+  mainWrapper: () => document.querySelector('.two'),  
+    //document.querySelector('.two').childNodes[1]
+    //OverlayMenus, includes leftMenus (Settings), uploadPannel(to upload photos/videos)
+    overlayMenus: () => document.querySelector('.two').childNodes[2],
+      uploadPannel: () => document.querySelector('.two').childNodes[2].childNodes[1],   
+      leftSettingPannel: () => document.querySelector('.two').childNodes[2].childNodes[0],
+    chatList: () => document.querySelector('.two').childNodes[3],
+    chatWindow: () => document.querySelector('.two').childNodes[4],
+  //-------------------------------------------------------------------------------------------
+    
   leftMenu: () => document.querySelector('header'),
-  contactInfo: () => document.getElementById("app").getElementsByClassName('three')[0].childNodes[5],
+  contactInfo: () => document.querySelector('.three').childNodes[5],
   smileyPanel: () => document.querySelector('#expressions-panel-container > :first-child > :first-child'),
-  settingMenus: () => document.querySelector('.two').childNodes[2],
-  uploadPannel: () => document.querySelector('.two').childNodes[2].childNodes[1],   
-  leftSettingPannel: () => document.querySelector('.two').childNodes[2].childNodes[0]   
-// ?????= document.querySelector('.two').childNodes[1]  
-// ?????= document.getElementById('app').getElementsByClassName('two')[0]
-// document.getElementById('app').getElementsByClassName('landing-wrapper')
+  
+
+  
+  //Landing elements (Only present temporarilly while whatsapp is loading)
+  landingWrapper: () => document.querySelector('.landing-wrapper'),
+  landingHeader: () => document.querySelector('.landing-header')
+  
 };
 
 //-------------------------------------------------------------------------------------
@@ -111,11 +121,11 @@ var checkExist = setInterval(function() {
     clean();
     location.reload();
   } else {
-    if (document.getElementById('app').getElementsByClassName('landing-wrapper').length) {
-      document.getElementById('app').getElementsByClassName('landing-wrapper')[0].style.minWidth = 'auto';
-      document.getElementById('app').getElementsByClassName('landing-header')[0].style.display = 'none';
+    if (X.landingWrapper()) {
+      X.landingWrapper().style.minWidth = 'auto';
+      X.landingHeader().style.display = 'none';
     }
-    if (document.querySelector('.two').childNodes.length) {
+    if (X.mainWrapper().childNodes.length) {
       console.log("Exists!");
       if ( check == 0 ) {
         clearInterval(checkExist);
@@ -135,13 +145,13 @@ function main(){
   console.log("Call main function")
  // X.chatList().style.display = 'none';
   // document.querySelector('.two').childNodes[1].childNodes[2].style.display = 'none';
-  X.settingMenus().style.width="0";
+  X.overlayMenus().style.width="0";
   
   showchatlist();  
   X.chatList().style.minWidth = "100%"
   X.chatWindow().style.minWidth = "100%"  
-   document.getElementById('app').getElementsByClassName('two')[0].style.minWidth = 'auto';
-   document.getElementById('app').getElementsByClassName('two')[0].style.minHeight = 'auto';
+   X.mainWrapper().style.minWidth = 'auto';
+   X.mainWrapper().style.minHeight = 'auto';
 //   
   //Avoid opening the keyboard when entering a chat
   document.body.addEventListener('focusin', (event) => {
@@ -249,10 +259,10 @@ function toggleLeftMenu(){
         X.chatList().style.left= '';
         X.chatList().style.position= 'static';
 
-        document.getElementById('app').getElementsByClassName('two')[0].style.minWidth = '';
-        document.getElementById('app').getElementsByClassName('two')[0].style.minHeight = '';
-        X.settingMenus().style.width="100%";
-        X.settingMenus().style.minWidth = "90%"
+        X.mainWrapper().style.minWidth = '';
+        X.mainWrapper().style.minHeight = '';
+        X.overlayMenus().style.width="100%";
+        X.overlayMenus().style.minWidth = "90%"
         
         
         X.uploadPannel().style.width="";
@@ -262,12 +272,12 @@ function toggleLeftMenu(){
       }
       else
       {
-        document.getElementById('app').getElementsByClassName('two')[0].style.minWidth = 'auto';
-        document.getElementById('app').getElementsByClassName('two')[0].style.minHeight = 'auto';
+        X.mainWrapper().style.minWidth = 'auto';
+        X.mainWrapper().style.minHeight = 'auto';
         X.chatList().style.position= 'absolute';
         X.chatList().style.left= '0';
-        X.settingMenus().style.minWidth = "0%"
-        X.settingMenus().style.width="0%";
+        X.overlayMenus().style.minWidth = "0%"
+        X.overlayMenus().style.width="0%";
         setTimeout(() => {
            X.leftMenu().style.display = 'none';
            document.querySelector('.two').childNodes[1].childNodes[0].style.minWidth = "100%"   
@@ -347,10 +357,10 @@ function showchatWindow(){
   //Hide left menu
    X.leftMenu().style.display = 'none';
    document.querySelector('.two').childNodes[1].childNodes[0].style.minWidth = "100%"    
-   document.getElementById('app').getElementsByClassName('two')[0].style.minWidth = 'auto';
-   document.getElementById('app').getElementsByClassName('two')[0].style.minHeight = 'auto';
-   X.settingMenus().style.minWidth = "100%"
-   X.settingMenus().style.width="100%"; 
+   X.mainWrapper().style.minWidth = 'auto';
+   X.mainWrapper().style.minHeight = 'auto';
+   X.overlayMenus().style.minWidth = "100%"
+   X.overlayMenus().style.width="100%"; 
    
 
     X.uploadPannel().style.width="100%";
