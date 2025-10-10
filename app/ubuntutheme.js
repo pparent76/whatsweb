@@ -28,7 +28,8 @@ const X = {
   smileyWrapper: () => document.getElementById('expressions-panel-container'),
   smileyPanel: () => document.querySelector('#expressions-panel-container > :first-child > :first-child'),
   
-
+  newChatButton: () => document.querySelector('[data-icon="new-chat-outline"]').parentElement.parentElement,
+  archivedChatButton: () => document.querySelector('#pane-side').childNodes[0], 
   
   //Landing elements (Only present temporarilly while whatsapp is loading)
   landingWrapper: () => document.querySelector('.landing-wrapper'),
@@ -186,6 +187,20 @@ function main(){
   //Send theme information to mainView
   console.log("[ThemeBackgroundColorDebug]"+getComputedStyle(X.leftMenu()).getPropertyValue('--WDS-surface-default').trim());
 
+  //Open menu for new chat list
+  X.newChatButton().addEventListener('click', () => {
+    if ( X.leftMenu().style.display == 'none' )
+        toggleLeftMenu();
+  });
+  
+  //Open menu for new chat list
+  if (X.archivedChatButton().tagName.toLowerCase() === 'button') {
+    X.archivedChatButton().addEventListener('click', () => {
+      if ( X.leftMenu().style.display == 'none' )
+          toggleLeftMenu();
+    });  
+  }
+  
   //Request by default webnofications permission
   Notification.requestPermission();
 }
@@ -221,7 +236,6 @@ window.addEventListener("click", function() {
       lastClickEditable=1;
       }
   }
-  
 
   // Handle contactInfo Openned panel
   if (X.upperWrapper() !== undefined){
