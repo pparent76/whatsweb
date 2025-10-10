@@ -28,7 +28,7 @@ const X = {
   smileyWrapper: () => document.getElementById('expressions-panel-container'),
   smileyPanel: () => document.querySelector('#expressions-panel-container > :first-child > :first-child'),
   
-  newChatButton: () => document.querySelector('[data-icon="new-chat-outline"]').parentElement.parentElement.parentElement,
+  newChatButton: () => document.querySelector('[data-icon="new-chat-outline"]').parentElement.parentElement,
   archivedChatButton: () => document.querySelector('#pane-side').childNodes[0], 
   
   //Landing elements (Only present temporarilly while whatsapp is loading)
@@ -210,11 +210,16 @@ function main(){
   Notification.requestPermission();
 }
 
+//---------------------------------------------------------------------
 //------------------------------------------------------------
 //  Analize JS after every click on APP and execute Actions
 //------------------------------------------------------------
+//---------------------------------------------------------------------
+
+//---------------------------------------------
+// Handle Main navigation to chatWindow
+//---------------------------------------------
 window.addEventListener("click", function() {
-    console.log("Click")
   
   lastClickEditable=0
   const grid = event.target.closest('[role="grid"]');
@@ -235,24 +240,61 @@ window.addEventListener("click", function() {
       }
   }
   
+}); 
+
+//---------------------------------------------
+// Security to add back buttons when click on header
+//---------------------------------------------
+window.addEventListener("click", function() {
+if (event.target.tagName.toLowerCase() === 'header') {
+ addBackButtonToChatViewWithTimeout();  
+}
+}); 
+//---------------------------------------------
+// Handle contactInfo Openned panel
+//---------------------------------------------
+window.addEventListener("click", function() {
+  // Handle contactInfo Openned panel
+  if (X.upperWrapper() !== undefined){
+    if (X.contactInfo() !== undefined){
+      inchatcontactandgroupinfo();
+    }
+  }
+});   
+  
+//---------------------------------------------
+// Handle navigation form leftmenu to chatWindow
+//---------------------------------------------
+window.addEventListener("click", function() {
+  
+  //Click on a chat in menu -> Show chat menu
+  if (isInNewChatMenu ==1
+    && event.target.closest('[role="listitem"]')
+    && event.target.closest('[role="listitem"]').firstElementChild.getAttribute('role') === 'button'){
+      showchatWindow();
+  }  
   
   if ( event.target.getAttribute('data-icon') === 'community-filled-refreshed-32' || event.target.getAttribute('data-icon') === 'community-refreshed-32')
   {
    isInCommunity=1;
    isInArchivedMenu=0;
    isInNewChatMenu=0;    
+   addBackButtonToChatViewWithTimeout();   
   }
   
+
   //Changing view in menus
   if (event.target.getAttribute('data-icon') === 'status-refreshed' 
     || event.target.getAttribute('data-icon') === 'newsletter-outline'
     || event.target.getAttribute('data-icon') === 'settings-refreshed'
-    || X.leftMenu().contains(event.target))
+    || event.target.getAttribute('data-icon') === 'status-filled-refreshed' 
+    || event.target.getAttribute('data-icon') === 'newsletter-outline'
+    || event.target.getAttribute('data-icon') === 'settings-filled-refreshed')
   {
     console.log("view changed")
    isInArchivedMenu=0;
    isInNewChatMenu=0;
-   addBackButtonToChatViewWithTimeout();
+   isInCommunity=0;
   }
   
   
@@ -279,13 +321,19 @@ window.addEventListener("click", function() {
       addBackButtonToChatViewWithTimeout();
   }  
   
-  // Handle contactInfo Openned panel
-  if (X.upperWrapper() !== undefined){
-    if (X.contactInfo() !== undefined){
-      inchatcontactandgroupinfo();
-    }
+  if (event.target.getAttribute('data-icon') === 'chat-filled-refreshed' || event.target.getAttribute('data-icon') === 'chat-refreshed')
+  {
+   isInArchivedMenu=0;
+   isInNewChatMenu=0;    
+   addBackButtonToChatViewWithTimeout();   
   }
+    
+}); 
   
+//---------------------------------------------
+// Handle quick copy to ClipBoard
+//---------------------------------------------
+window.addEventListener("click", function() {
   //For Quick Copy to ClipBoard system
   if ( lastClickContact != 1 )
   {
@@ -433,6 +481,8 @@ function showchatWindow(){
     X.leftSettingPannel().style.display="none"; 
     addBackButtonToChatViewWithTimeout();
 
+   isInArchivedMenu=0;
+   isInNewChatMenu=0;
 }
 
 function addBackButtonToChatViewWithTimeout()
