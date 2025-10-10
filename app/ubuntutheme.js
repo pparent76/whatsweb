@@ -151,7 +151,7 @@ function main(){
   X.chatWindow().style.minWidth = "100%"  
    X.mainWrapper().style.minWidth = 'auto';
    X.mainWrapper().style.minHeight = 'auto';
-//   
+   
   //Avoid opening the keyboard when entering a chat
   document.body.addEventListener('focusin', (event) => {
   const el = event.target;
@@ -166,14 +166,10 @@ function main(){
    if (X.leftMenu()) {
      X.leftMenu().style.display = 'none';
    }
-   
-  // Resize Profile and Settings menu
- // X.unkownSection2().style.minWidth = "100%"
     
   //Fix emoticons panel
   if (X.smileyWrapper()) {
     const observer = new MutationObserver((mutationsList) => {
-     // for (const mutation of mutationsList) {
           X.smileyPanel().style.transformOrigin = "left bottom"; 
           X.smileyPanel().style.transform= 'scale(0.7)';
           X.smileyPanel().style.left= '2%'; 
@@ -183,10 +179,12 @@ function main(){
           setTimeout(() => {
           X.smileyPanel().style.transform= 'scale(0.7)';
           }, 1000);          
-      //}
     });
     observer.observe(X.smileyWrapper(), { childList: true, subtree: true });
   }
+  
+  //Send theme information to mainView
+  console.log("[ThemeBackgroundColorDebug]"+getComputedStyle(X.leftMenu()).getPropertyValue('--WDS-surface-default').trim());
 
   //Request by default webnofications permission
   Notification.requestPermission();
@@ -207,6 +205,10 @@ window.addEventListener("click", function() {
         setTimeout(() => {
         addBackButtonToChatView();
           }, 200);
+
+        setTimeout(() => {
+        addBackButtonToChatView();
+          }, 1500);        
       }
       lastClickContact=1
   }
@@ -242,9 +244,6 @@ window.addEventListener("click", function() {
   
 });
 
-
-
-
 //------------------------------------------------------------------------------------
 //          Function To display or hide left menu
 //------------------------------------------------------------------------------------
@@ -278,7 +277,8 @@ function toggleLeftMenu(){
            X.leftMenu().style.display = 'none';
            X.unkownSection2().style.minWidth = "100%"   
         }, 500);
-  
+        //Send theme information to mainView when closing menus
+          console.log("[ThemeBackgroundColorDebug]"+getComputedStyle(X.leftMenu()).getPropertyValue('--WDS-surface-default').trim());
       }
   }
 }
@@ -288,7 +288,7 @@ function toggleLeftMenu(){
 //                 inside main chat list header
 //------------------------------------------------------------------------------------
 function addLeftMenuButtonToChatList(){
-    addCss(".added_menu_button span { display:block; height: 100%; width: 100%;}.added_menu_button {  z-index:500; width:50px; height:45px; } html[dir] .added_menu_button { border-radius:50%; } html[dir=ltr] .added_menu_button { right:11px } html[dir=rtl] .added_menu_button { left:11px } .added_menu_button path { fill:#000000; fill-opacity:1 } .svg_back { transform: rotate(90deg); height: 100%;}");
+    addCss(".added_menu_button span { display:block; height: 100%; width: 100%;}.added_menu_button {  z-index:500; width:50px; height:45px; } html[dir] .added_menu_button { border-radius:50%; } html[dir=ltr] .added_menu_button { right:11px } html[dir=rtl] .added_menu_button { left:11px } .added_menu_button path { fill:var(--panel-header-icon); fill-opacity:1 } .svg_back { transform: rotate(90deg); height: 100%;}");
 
     var newHTML         = document.createElement('div');
     newHTML.className += "added_menu_button";
@@ -296,6 +296,7 @@ function addLeftMenuButtonToChatList(){
     newHTML.addEventListener("click", toggleLeftMenu);    
     newHTML.innerHTML   = '<a href="javascript:void(0);" ><span class="html-span" style="height:50px; width:60px;"><div class="html-div" style="padding:10px; --x-transform: none;"><div aria-expanded="false" aria-haspopup="menu" aria-label="MenuLeft" class=""><div class="html-div"><span aria-hidden="true" data-icon="more-refreshed" ><svg viewBox="0 0 24 24" height="24" width="24" preserveAspectRatio="xMidYMid meet" class="" fill="none"><title>more-refreshed</title><path d="M12 20C11.45 20 10.9792 19.8042 10.5875 19.4125C10.1958 19.0208 10 18.55 10 18C10 17.45 10.1958 16.9792 10.5875 16.5875C10.9792 16.1958 11.45 16 12 16C12.55 16 13.0208 16.1958 13.4125 16.5875C13.8042 16.9792 14 17.45 14 18C14 18.55 13.8042 19.0208 13.4125 19.4125C13.0208 19.8042 12.55 20 12 20ZM12 14C11.45 14 10.9792 13.8042 10.5875 13.4125C10.1958 13.0208 10 12.55 10 12C10 11.45 10.1958 10.9792 10.5875 10.5875C10.9792 10.1958 11.45 10 12 10C12.55 10 13.0208 10.1958 13.4125 10.5875C13.8042 10.9792 14 11.45 14 12C14 12.55 13.8042 13.0208 13.4125 13.4125C13.0208 13.8042 12.55 14 12 14ZM12 8C11.45 8 10.9792 7.80417 10.5875 7.4125C10.1958 7.02083 10 6.55 10 6C10 5.45 10.1958 4.97917 10.5875 4.5875C10.9792 4.19583 11.45 4 12 4C12.55 4 13.0208 4.19583 13.4125 4.5875C13.8042 4.97917 14 5.45 14 6C14 6.55 13.8042 7.02083 13.4125 7.4125C13.0208 7.80417 12.55 8 12 8Z" fill="currentColor"></path></svg></span></div><div class="html-div" role="none" data-visualcompletion="ignore" style="inset: 0px;"></div></div></div></span></a>';
     
+    //Insert it, TODO improve the way it is inserted
     document.querySelectorAll('header').forEach(header => {
         if (  header.querySelector('[data-icon="new-chat-outline"]') && ! header.querySelector('#added_menu_button') )
         {
@@ -314,7 +315,7 @@ function addLeftMenuButtonToChatList(){
 //----------------------------------------------------------------------------
 function addBackButtonToChatView(){
 
-    addCss(".back_button span { display:block; height: 100%; width: 100%;}.back_button {  z-index:200; width:37px; height:45px; } html[dir] .back_button { border-radius:50%; } html[dir=ltr] .back_button { right:11px } html[dir=rtl] .back_button { left:11px } .back_button path { fill:#000000; fill-opacity:1 } .svg_back { transform: rotate(90deg); height: 100%;}");
+    addCss(".back_button span { display:block; height: 100%; width: 100%;}.back_button {  z-index:200; width:37px; height:45px; } html[dir] .back_button { border-radius:50%; } html[dir=ltr] .back_button { right:11px } html[dir=rtl] .back_button { left:11px } .back_button path { fill:var(--panel-header-icon); fill-opacity:1 } .svg_back { transform: rotate(90deg); height: 100%;}");
     
     var newHTML         = document.createElement('div');
     newHTML.className += "back_button";
@@ -322,9 +323,12 @@ function addBackButtonToChatView(){
     newHTML.addEventListener("click", showchatlist);
     newHTML.innerHTML   = "<span data-icon='left' id='back_button' ><svg class='svg_back' id='Layer_1' xmlns='http://www.w3.org/2000/svg' viewBox='0 0 21 21' width='21' height='21'><path fill='#000000' fill-opacity='1' d='M4.8 6.1l5.7 5.7 5.7-5.7 1.6 1.6-7.3 7.2-7.3-7.2 1.6-1.6z'></path></svg></span>";
 
+    //Insert it, TODO improve the way it is inserted    
     document.querySelectorAll('header').forEach(header => {
         if (  header.querySelector('[data-icon="search-refreshed"]') && ! header.querySelector('#back_button') )
-          header.prepend(newHTML); 
+        {
+          header.prepend(newHTML);
+        }
     });
 }
 
@@ -333,30 +337,32 @@ function addBackButtonToChatView(){
 //         Function to show main chat list view
 //----------------------------------------------------------------------------
 function showchatlist(){
-   document.activeElement.blur();
+  //Make sure to unfocus any focused élément of previous view  
+  document.activeElement.blur();
   
-   //X.chatList().style.visibility = 'visible';
+  //Slide back Chatlist panel to main view  
   X.chatList().style.transition= "left 0.30s ease-in-out";
-   X.chatList().style.position= 'absolute';
-   X.chatList().style.left= '0';
+  X.chatList().style.position= 'absolute';
+  X.chatList().style.left= '0';
 
 }
 
 function showchatWindow(){
+  //Make sure to unfocus any focused élément of previous view
    document.activeElement.blur();
-  
-   //X.chatList().style.visibility = 'hidden'; 
+   
+   //Slide Chatlist panel to the left
    X.chatList().style.transition= "left 0.30s ease-in-out";
    X.chatList().style.position= 'absolute'; 
    X.chatList().style.left= "-100%";
    
-  //Hide left menu
+  //Hide left menu (in case it was oppened)
    X.leftMenu().style.display = 'none';
    X.unkownSection2().style.minWidth = "100%"    
    X.overlayMenus().style.minWidth = "100%"
    X.overlayMenus().style.width="100%"; 
    
-
+   //Activate Upload Panel, in case the user will upload some files
     X.uploadPannel().style.width="100%";
     X.uploadPannel().style.minWidth="100%";   
     X.leftSettingPannel().style.display="none"; 
@@ -370,6 +376,7 @@ function showchatWindow(){
 function inchatcontactandgroupinfo(){
   // console.log("inchatcontactandgroupinfo")
   if (X.contactInfo()){
+      //We need for this section to use absolute postion
       X.contactInfo().style.position= "absolute";
       X.contactInfo().style.width = "100%";
       X.contactInfo().style.maxWidth = "100%";  

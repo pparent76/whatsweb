@@ -237,6 +237,16 @@ MainView {
             if (message.startsWith("[ShowDebug]")) {
                 toast.show(message.replace(/^\[ShowDebug\]\s*/, ""))
             }            
+            if (message.startsWith("[ThemeBackgroundColorDebug]")) {
+              
+              
+              if ( message.replace(/^\[ThemeBackgroundColorDebug\]\s*/, "") == "#161717" )
+              {
+               screensaverBackground.source="../screensaver-black.png";
+              }
+              else
+               screensaverBackground.source="../screensaver.png" ;
+            }
         }
         
       } //End webview--------------------------------------------------------------------------------------------
