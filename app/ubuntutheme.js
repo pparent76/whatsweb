@@ -28,7 +28,7 @@ const X = {
   smileyWrapper: () => document.getElementById('expressions-panel-container'),
   smileyPanel: () => document.querySelector('#expressions-panel-container > :first-child > :first-child'),
   
-  newChatButton: () => document.querySelector('[data-icon="new-chat-outline"]').parentElement.parentElement,
+  newChatButton: () => document.querySelector('[data-icon="new-chat-outline"]').parentElement.parentElement.parentElement,
   archivedChatButton: () => document.querySelector('#pane-side').childNodes[0], 
   
   //Landing elements (Only present temporarilly while whatsapp is loading)
@@ -81,6 +81,9 @@ updatenotificacion = 0;
 allownotification = 0;
 var lastClickContact = 0;
 var lastClickEditable = 0;
+var isInArchivedMenu = 0;
+var isInNewChatMenu = 0;
+var isInCommunity = 0;
 
 //-----------------------------------------------------
 //Request by default webnofications permission
@@ -189,13 +192,15 @@ function main(){
 
   //Open menu for new chat list
   X.newChatButton().addEventListener('click', () => {
+    isInNewChatMenu=1; isInCommunity=0;
     if ( X.leftMenu().style.display == 'none' )
         toggleLeftMenu();
   });
   
-  //Open menu for new chat list
+  //Open menu for archivedMenu
   if (X.archivedChatButton().tagName.toLowerCase() === 'button') {
     X.archivedChatButton().addEventListener('click', () => {
+      isInArchivedMenu=1;isInCommunity=0;
       if ( X.leftMenu().style.display == 'none' )
           toggleLeftMenu();
     });  
@@ -216,14 +221,7 @@ window.addEventListener("click", function() {
   if (grid) {
       if (lastClickContact==0)
       {
-        showchatWindow();
-        setTimeout(() => {
-        addBackButtonToChatView();
-          }, 200);
-
-        setTimeout(() => {
-        addBackButtonToChatView();
-          }, 1500);        
+        showchatWindow();     
       }
       lastClickContact=1
   }
@@ -236,7 +234,51 @@ window.addEventListener("click", function() {
       lastClickEditable=1;
       }
   }
+  
+  
+  if ( event.target.getAttribute('data-icon') === 'community-filled-refreshed-32' || event.target.getAttribute('data-icon') === 'community-refreshed-32')
+  {
+   isInCommunity=1;
+   isInArchivedMenu=0;
+   isInNewChatMenu=0;    
+  }
+  
+  //Changing view in menus
+  if (event.target.getAttribute('data-icon') === 'status-refreshed' 
+    || event.target.getAttribute('data-icon') === 'newsletter-outline'
+    || event.target.getAttribute('data-icon') === 'settings-refreshed'
+    || X.leftMenu().contains(event.target))
+  {
+    console.log("view changed")
+   isInArchivedMenu=0;
+   isInNewChatMenu=0;
+   addBackButtonToChatViewWithTimeout();
+  }
+  
+  
+  //Click on a chat in menu -> Show chat menu
+  if (isInArchivedMenu ==1
+    && X.leftSettingPannel().contains(event.target) 
+    && event.target.closest('[role="listitem"]')
+    && event.target.closest('[role="listitem"]').firstElementChild.hasAttribute('aria-selected')){
+      showchatWindow();
+  }
+  
+  //Click on a chat in menu -> Show chat menu
+  if (isInNewChatMenu ==1
+    && X.leftSettingPannel().contains(event.target) 
+    && event.target.closest('[role="listitem"]')
+    && event.target.closest('[role="listitem"]').firstElementChild.getAttribute('role') === 'button'){
+      showchatWindow();
+  }  
 
+  //Click on a chat in menu -> Show chat menu
+  if (isInCommunity ==1
+    && X.leftSettingPannel().contains(event.target) 
+    && event.target.closest('[role="listitem"]')){
+      addBackButtonToChatViewWithTimeout();
+  }  
+  
   // Handle contactInfo Openned panel
   if (X.upperWrapper() !== undefined){
     if (X.contactInfo() !== undefined){
@@ -293,6 +335,9 @@ function toggleLeftMenu(){
         }, 500);
         //Send theme information to mainView when closing menus
           console.log("[ThemeBackgroundColorDebug]"+getComputedStyle(X.leftMenu()).getPropertyValue('--WDS-surface-default').trim());
+          
+          isInArchivedMenu=0;
+          isInNewChatMenu=0;
       }
   }
 }
@@ -358,6 +403,12 @@ function showchatlist(){
   X.chatList().style.transition= "left 0.30s ease-in-out";
   X.chatList().style.position= 'absolute';
   X.chatList().style.left= '0';
+  
+  //Comming back to community pannel, and left pannel was open close it
+  if (isInCommunity ==1 && X.leftMenu().style.display != 'none' )
+  {
+        toggleLeftMenu();
+  }
 
 }
 
@@ -380,9 +431,26 @@ function showchatWindow(){
     X.uploadPannel().style.width="100%";
     X.uploadPannel().style.minWidth="100%";   
     X.leftSettingPannel().style.display="none"; 
+    addBackButtonToChatViewWithTimeout();
 
 }
 
+function addBackButtonToChatViewWithTimeout()
+{
+      //Add back Button
+    setTimeout(() => {
+        addBackButtonToChatView();
+    }, 20);
+
+    setTimeout(() => {
+    addBackButtonToChatView();
+    }, 300);    
+    
+    setTimeout(() => {
+    addBackButtonToChatView();
+    }, 1500); 
+  
+}
 //-----------------------------------------------------------------------------
 //         Functions to handle contactInfo pannel
 //----------------------------------------------------------------------------
