@@ -9,18 +9,31 @@ import QtSystemInfo 5.5
 import Ubuntu.Components.ListItems 1.3 as ListItemm
 import Ubuntu.Content 1.3
 import Pparent.Notifications 1.0
+import Pparent.DownloadHelper 1.0  
 
 
 MainView {
   id: mainView
+  
+  property var appID: "whatsweb.pparent";
+  property var hook: "whatsweb";  
+  property var localStorage: "/home/phablet/.cache/whatsweb.pparent/QtWebEngine";  
+  
+  
   property int lastUnreadCount: -1;
   property var lastNotifyTimestamp: 0;  
 
   //Object from notification module
   NotificationHelper {
         id: notifier
-        push_app_id:"whatsweb.pparent_whatsweb"
+        push_app_id:appID+"_"+hook
   }
+    
+ DownloadHelper {
+        id: downloadHelper
+        blob_path: localStorage+"/IndexedDB/https_web.whatsapp.com_0.indexeddb.blob/"
+    }   
+    
     
   //Function to allow notification while avoiding flooding at the same time
   function notifyBackup(title,msg) {
@@ -74,7 +87,7 @@ MainView {
   }
   objectName: "mainView"
   //theme.name: "Ubuntu.Components.Themes.SuruDark"
-  applicationName: "whatsweb.pparent"
+  applicationName: appID
   backgroundColor : "transparent"
 
 
@@ -90,7 +103,10 @@ MainView {
       id: pageMain
       anchors.fill: parent
       
-
+      
+    //--------------------------------------------------------------------------------------------
+    // ScreenSaverView Component should be moved to other source file
+    //--------------------------------------------------------------------------------------------
     Rectangle {
         visible: !Qt.application.active
         anchors.fill: parent
@@ -116,7 +132,7 @@ MainView {
 
             fillMode: Image.PreserveAspectFit
         }
-    }  
+      }  
       
       //Webview-----------------------------------------------------------------------------------------------------
       WebEngineView {
@@ -139,8 +155,7 @@ MainView {
           id: webContext
           httpUserAgent: "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/87.0.4280.144 Safari/537.36"
           storageName: "Storage"
-          downloadPath: "/home/phablet/.cache/whatsweb.pparent/Download/"
-          persistentStoragePath: "/home/phablet/.cache/whatsweb.pparent/QtWebEngine"
+          persistentStoragePath: localStorage
           //----------------------------------------------------------------------
           //  Notification based on web desktop notifications (Higher priority)
           //----------------------------------------------------------------------   
@@ -149,14 +164,7 @@ MainView {
           }
           
           onDownloadRequested: {
-                //toast.show("Téléchargement demandé : " + downloadItem.url)
-                // On choisit un chemin temporaire
-                //downloadItem.path = "/home/phablet/.cache/whatsweb.pparent/Download/" + downloadItem.downloadFileName
-                downloadItem.accept()
-                //downloadItem.finished.connect(function() {
-                //console.log("Téléchargement terminé :", downloadItem.path)
-                //Qt.openUrlExternally("file://" + downloadItem.path)
-                //})
+              //Not working for now in Qt5
           }
         
         }//End WebEngineProfile
@@ -217,6 +225,8 @@ MainView {
             else
               notifier.updateCount(0)
         }
+        
+
         //----------------------------------------------------------------------------
         //  Notification based on audio sound file played (LOWER PRIORITY wait 300ms)
         //----------------------------------------------------------------------------
@@ -236,7 +246,14 @@ MainView {
             }
             if (message.startsWith("[ShowDebug]")) {
                 toast.show(message.replace(/^\[ShowDebug\]\s*/, ""))
-            }            
+            }  
+            
+            //Handle Download when Js tells us a file has been saved to local storage
+            if (message.startsWith("[DownloadBlob]")) {
+                let output = downloadHelper.getLastDownloaded()
+                var exportPage = mainPageStack.push(Qt.resolvedUrl("ExportPage.qml"),{"url": Qt.resolvedUrl("file://"+output),"contentType": ContentType.All})
+            } 
+            
             if (message.startsWith("[ThemeBackgroundColorDebug]")) {
               
               
@@ -249,11 +266,22 @@ MainView {
             }
         }
         
+ 
+
       } //End webview--------------------------------------------------------------------------------------------
+      
+      
+      
+
+
      TextEdit{
         id: textEdit
         visible: false
       }
+      
+//--------------------------------------------------------------------------------------------
+// Toast Component should be moved to other source file
+//--------------------------------------------------------------------------------------------
 Rectangle {
     id: toast
     radius: 8
@@ -307,9 +335,10 @@ Rectangle {
         toast.visible = true
         toast.opacity = 1
         timer.restart()
-        shown()
     }
   }
+  //--------------------------------------------------------------------------------------------------------
+
       
     }
     

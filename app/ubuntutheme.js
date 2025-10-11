@@ -247,7 +247,7 @@ window.addEventListener("click", function() {
 //---------------------------------------------
 window.addEventListener("click", function() {
 if (event.target.tagName.toLowerCase() === 'header') {
- addBackButtonToChatViewWithTimeout();  
+ addBackButtonToChatView();  
 }
 }); 
 //---------------------------------------------
@@ -583,3 +583,80 @@ function clean() {
   } catch(e){}
 
 })();
+
+
+
+//----------------------------------------------------------------------------------------
+//                        Handle download Blobs to local storage
+//-----------------------------------------------------------------------------------------
+
+const blobMap = new Map();
+var downloadedBlob;
+
+  // 1) Surveiller la création des blob: URLs
+  const origCreateObjectURL = URL.createObjectURL.bind(URL);
+  URL.createObjectURL = function (blob) {
+    const url = origCreateObjectURL(blob);
+    try {
+      blobMap.set(url, { blob, createdAt: new Date() });
+    } catch (e) { /* fail silently si Map non permise */ }
+    return url;
+  };
+
+  // 1b) Surveiller revoke (nettoyage)
+  const origRevokeObjectURL = URL.revokeObjectURL.bind(URL);
+  URL.revokeObjectURL = function (url) {
+    if (blobMap.has(url)) {
+      blobMap.delete(url);
+    }
+    return origRevokeObjectURL(url);
+  };
+
+
+  
+  function saveBlob(blob, key) {
+    return new Promise((resolve, reject) => {
+        const request = indexedDB.open("MyDB", 1);
+
+        request.onupgradeneeded = (event) => {
+            const db = event.target.result;
+            if (!db.objectStoreNames.contains("blobs")) {
+                db.createObjectStore("blobs");
+            }
+        };
+
+        request.onsuccess = (event) => {
+            const db = event.target.result;
+            const tx = db.transaction("blobs", "readwrite");
+            const store = tx.objectStore("blobs");
+            store.put(blob, key);
+
+            tx.oncomplete = () => {resolve(); console.log('[DownloadBlob] test');}
+            tx.onerror = (e) => reject(e);
+        };
+
+        request.onerror = (e) => reject(e);
+    });
+}
+
+  // 2) Intercepter les clics sur les liens <a> pointant vers blob:
+  document.addEventListener('click', function (ev) {
+    // ne pas empêcher le comportement par défaut, juste logger
+    let target = ev.target;
+    while (target && target !== document) {
+      if (target.tagName === 'A' && target.href) {
+        try {
+          const href = target.href;
+          if (href.startsWith('blob:')) {
+            //console.log('[DownloadBlob]', href);
+            // si tu veux aussi accéder au Blob objet :
+            const entry = blobMap.get(href);
+            downloadedBlob=entry;
+            saveBlob(downloadedBlob.blob,"testpierre")
+          }
+        } catch (e) { /* ignore */ }
+        break; // qu'on trouve ou pas, on sort
+      }
+      target = target.parentNode;
+    }
+  }, true); // capture phase pour attraper tôt

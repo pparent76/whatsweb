@@ -7,6 +7,7 @@ set(CMAKE_AUTOUIC ON)
 
 #Notification module
 add_subdirectory(qml-notify-module)
+add_subdirectory(qml-download-helper-module)
 
 # Installer le QML
 install(DIRECTORY app/ DESTINATION ${CMAKE_INSTALL_PREFIX}/app/)
