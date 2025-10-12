@@ -244,7 +244,7 @@ MainView {
                 //textEdit.text = message
                 textEdit.selectAll()
                 textEdit.copy()
-                toast.show(webview.zoomFactor+" Message copied to clipboard!")
+                toast.show("Message copied!")
             }
             if (message.startsWith("[ShowDebug]")) {
                 toast.show(message.replace(/^\[ShowDebug\]\s*/, ""))

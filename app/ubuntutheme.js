@@ -199,7 +199,7 @@ function main(){
 
   //Open menu for new chat list
   X.newChatButton().addEventListener('click', () => {
-    isInNewChatMenu=1; isInCommunity=0;
+    isInNewChatMenu=1; isInCommunity=0; isInArchivedMenu=0;
     if ( X.leftMenu().style.display == 'none' )
         toggleLeftMenu();
   });
@@ -207,7 +207,7 @@ function main(){
   //Open menu for archivedMenu
   if (X.archivedChatButton().tagName.toLowerCase() === 'button') {
     X.archivedChatButton().addEventListener('click', () => {
-      isInArchivedMenu=1;isInCommunity=0;
+      isInArchivedMenu=1;isInCommunity=0; isInNewChatMenu=0;
       if ( X.leftMenu().style.display == 'none' )
           toggleLeftMenu();
     });  
@@ -274,6 +274,10 @@ window.addEventListener("click", function() {
 //---------------------------------------------
 window.addEventListener("click", function() {
   
+  //Cette fonction gère seulement si le menu de gauche est affiché
+  if ( X.leftMenu().style.display == 'none' )
+    return;
+  
   //Click on a chat in menu -> Show chat menu
   if (isInNewChatMenu ==1
     && event.target.closest('[role="listitem"]')
@@ -325,13 +329,17 @@ window.addEventListener("click", function() {
   if (isInCommunity ==1
     && X.leftSettingPannel().contains(event.target) 
     && event.target.closest('[role="listitem"]')){
-      addBackButtonToChatViewWithTimeout();
+      if (event.target.closest('[role="listitem"]').querySelector("[title]"))
+        showchatWindow();
+      else
+        addBackButtonToChatViewWithTimeout();
   }  
   
   if (event.target.getAttribute('data-icon') === 'chat-filled-refreshed' || event.target.getAttribute('data-icon') === 'chat-refreshed')
   {
    isInArchivedMenu=0;
-   isInNewChatMenu=0;    
+   isInNewChatMenu=0;  
+   isInCommunity=0;
    addBackButtonToChatViewWithTimeout();   
   }
     
@@ -390,9 +398,6 @@ function toggleLeftMenu(){
         }, 500);
         //Send theme information to mainView when closing menus
           console.log("[ThemeBackgroundColorDebug]"+getComputedStyle(X.leftMenu()).getPropertyValue('--WDS-surface-default').trim());
-          
-          isInArchivedMenu=0;
-          isInNewChatMenu=0;
       }
   }
 }
@@ -487,9 +492,6 @@ function showchatWindow(){
     X.uploadPannel().style.minWidth="100%";   
     X.leftSettingPannel().style.display="none"; 
     addBackButtonToChatViewWithTimeout();
-
-   isInArchivedMenu=0;
-   isInNewChatMenu=0;
 }
 
 function addBackButtonToChatViewWithTimeout()
