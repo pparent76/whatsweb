@@ -148,6 +148,13 @@ var checkExist = setInterval(function() {
 //----------------------------------------------------------------------
 function main(){
   console.log("Call main function")
+  
+  //Adapt fontsize
+  addCss("span { font-size: 104% !important; }");    
+  addCss(".selectable-text { font-size: 110% !important; }");  
+  addCss(".message-out {  padding-right: 20px !important; }");
+  addCss(".message-in {  padding-left: 20px !important; }");  
+  
   X.overlayMenus().style.width="0";
   
   showchatlist();  
