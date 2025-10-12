@@ -144,10 +144,12 @@ MainView {
         focus: true
         property var currentWebview: webview
         settings.pluginsEnabled: true
+        zoomFactor: mainView.width<mainView.height ? Math.round(100 * mainView.width / 410 ) / 100 : Math.round(100 * mainView.width / 900 ) / 100
         
         onKeyboardSizeChanged: {
         // Échapper correctement les quotes si nécessaire
-        const jsCode = `document.querySelector('footer').style.paddingBottom = "${keyboardSize}px"`;
+        var realKeyboardSize=keyboardSize/zoomFactor
+        const jsCode = `document.querySelector('footer').style.paddingBottom = "${realKeyboardSize}px"`;
         webview.runJavaScript(jsCode);
         }
         
@@ -242,7 +244,7 @@ MainView {
                 //textEdit.text = message
                 textEdit.selectAll()
                 textEdit.copy()
-                toast.show("Message copied to clipboard!")
+                toast.show(webview.zoomFactor+" Message copied to clipboard!")
             }
             if (message.startsWith("[ShowDebug]")) {
                 toast.show(message.replace(/^\[ShowDebug\]\s*/, ""))
