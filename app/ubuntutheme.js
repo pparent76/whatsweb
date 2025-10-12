@@ -33,8 +33,9 @@ const X = {
   
   //Landing elements (Only present temporarilly while whatsapp is loading)
   landingWrapper: () => document.querySelector('.landing-wrapper'),
-  landingHeader: () => document.querySelector('.landing-header')
-  
+  landingHeader: () => document.querySelector('.landing-header'),
+  mainDiv: () =>  document.querySelector("div#main"),
+  chatHeader: () =>  document.querySelector("div#main").querySelector("header")
 };
 
 //-------------------------------------------------------------------------------------
@@ -213,6 +214,29 @@ function main(){
     });  
   }
   
+  
+  // Créer un observer pour le body
+  const observer = new MutationObserver((mutations, obs) => {
+    
+    if (document.querySelector('.three')) {
+    // Handle contactInfo Openned panel
+    if (X.upperWrapper() !== undefined){
+      if (X.contactInfo() !== undefined){
+        inchatcontactandgroupinfo();
+      }
+    }
+    }
+    
+    backupBackButton()
+    
+  });
+
+  // Observer le body entier pour toutes les modifications
+  observer.observe(document.body, {
+    childList: true,
+    subtree: true
+  });  
+  
   //Request by default webnofications permission
   Notification.requestPermission();
 }
@@ -249,25 +273,29 @@ window.addEventListener("click", function() {
   
 }); 
 
-//---------------------------------------------
-// Security to add back buttons when click on header
-//---------------------------------------------
+//----------------------------------------------------
+// Security to add back buttons it not present
+//---------------------------------------------------
 window.addEventListener("click", function() {
-if (event.target.tagName.toLowerCase() === 'header') {
- addBackButtonToChatView();  
-}
+backupBackButton();
 }); 
-//---------------------------------------------
-// Handle contactInfo Openned panel
-//---------------------------------------------
-window.addEventListener("click", function() {
-  // Handle contactInfo Openned panel
-  if (X.upperWrapper() !== undefined){
-    if (X.contactInfo() !== undefined){
-      inchatcontactandgroupinfo();
+
+function backupBackButton()
+{
+ if (X.chatList().style.left== "-100%") {
+  if ( X.mainDiv() && X.chatHeader() )
+  {
+    if (! X.chatHeader().querySelector('#back_button') )
+    {
+    addBackButtonToChatView();  
     }
   }
-});   
+  else
+  {
+    showchatlist()
+  }
+} 
+}
   
 //---------------------------------------------
 // Handle navigation form leftmenu to chatWindow
@@ -442,13 +470,8 @@ function addBackButtonToChatView(){
     newHTML.addEventListener("click", showchatlist);
     newHTML.innerHTML   = "<span data-icon='left' id='back_button' ><svg class='svg_back' id='Layer_1' xmlns='http://www.w3.org/2000/svg' viewBox='0 0 21 21' width='21' height='21'><path fill='#000000' fill-opacity='1' d='M4.8 6.1l5.7 5.7 5.7-5.7 1.6 1.6-7.3 7.2-7.3-7.2 1.6-1.6z'></path></svg></span>";
 
-    //Insert it, TODO improve the way it is inserted    
-    document.querySelectorAll('header').forEach(header => {
-        if (  header.querySelector('[data-icon="search-refreshed"]') && ! header.querySelector('#back_button') )
-        {
-          header.prepend(newHTML);
-        }
-    });
+    if (! X.chatHeader().querySelector('#back_button') )
+        X.chatHeader().prepend(newHTML);
 }
 
 
