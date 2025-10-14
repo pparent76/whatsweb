@@ -17,8 +17,6 @@ install(FILES ${PROJECT_NAME}.desktop DESTINATION ${CMAKE_INSTALL_PREFIX})
 # Installer les icones
 install(FILES icon.png DESTINATION ${CMAKE_INSTALL_PREFIX})
 install(FILES icon-splash.png DESTINATION ${CMAKE_INSTALL_PREFIX})
-install(FILES screensaver.png DESTINATION ${CMAKE_INSTALL_PREFIX})
-install(FILES screensaver-black.png DESTINATION ${CMAKE_INSTALL_PREFIX})
 install(FILES manifest.json DESTINATION ${CMAKE_INSTALL_PREFIX})
 install(PROGRAMS pushexec DESTINATION ${CMAKE_INSTALL_PREFIX})
 install(FILES whatsweb-push-helper.json DESTINATION ${CMAKE_INSTALL_PREFIX})

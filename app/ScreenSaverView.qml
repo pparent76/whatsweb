@@ -12,7 +12,7 @@ Rectangle {
     // --- Image de fond ---
     Image {
         id: screensaverBackground
-        source: Qt.resolvedUrl("../screensaver.png")  // ton image de fond
+        source: Qt.resolvedUrl("Backgrounds/screensaver.png")  // ton image de fond
         anchors.centerIn: parent
         width: parent.width
         height: parent.height

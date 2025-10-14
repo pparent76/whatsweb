@@ -193,10 +193,10 @@ MainView {
               
               if ( message.replace(/^\[ThemeBackgroundColorDebug\]\s*/, "") == "#FFFFFF" )
               {
-               screenSaverView.backgroundSource="../screensaver.png";
+               screenSaverView.backgroundSource="Backgrounds/screensaver.png";
               }
               else
-               screenSaverView.backgroundSource="../screensaver-black.png" ;
+               screenSaverView.backgroundSource="Backgrounds/screensaver-black.png" ;
             }
         }
         
