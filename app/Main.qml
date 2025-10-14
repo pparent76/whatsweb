@@ -117,13 +117,17 @@ MainView {
           }
           ]
         onFileDialogRequested: function(request) {
-          request.accepted = true;
+           request.accepted = true;
           var importPage = mainPageStack.push(Qt.resolvedUrl("ImportPage.qml"),{"contentType": ContentType.All, "handler": ContentHandler.Source})
           importPage.imported.connect(function(fileUrl) {
             console.log(String(fileUrl).replace("file://", ""))
             request.dialogAccept(String(fileUrl).replace("file://", ""));
             mainPageStack.pop(importPage)
           })
+          importPage.cancel.connect(function() {
+            request.dialogAccept("")
+            mainPageStack.pop(importPage)
+          })          
         }
         onNewViewRequested: {
             request.action = WebEngineNavigationRequest.IgnoreRequest

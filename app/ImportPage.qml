@@ -33,8 +33,22 @@ Page {
 
     header: PageHeader {
         title: i18n.tr("Choose")
-    }
 
+                // on remplace le bouton back par une action custom
+                leadingActionBar.actions: [
+                    Action {
+                        iconName: "back"
+                        text: "Retour"
+                        onTriggered: {
+                            cancel()
+                        }
+                    }
+                ]
+        }
+
+    
+  
+    
     ContentPeerPicker {
         anchors { fill: parent; topMargin: picker.header.height }
         visible: parent.visible
@@ -63,6 +77,7 @@ Page {
 
         onCancelPressed: {
             console.log("Cancelled")
+            picker.cancel()
             pageStack.pop()
         }
     }
