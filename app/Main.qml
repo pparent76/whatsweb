@@ -104,35 +104,9 @@ MainView {
       anchors.fill: parent
       
       
-    //--------------------------------------------------------------------------------------------
-    // ScreenSaverView Component should be moved to other source file
-    //--------------------------------------------------------------------------------------------
-    Rectangle {
-        visible: !Qt.application.active
-        anchors.fill: parent
-        color: "#f0f0f0"  // gris très clair
-        Image {
-            id: screensaverBackground
-            source: "../screensaver.png"  // Mets ici ton icône
-            anchors.centerIn: parent
-
-            // 50% de la largeur de l'écran
-            width: parent.width
-            height: parent.height  // Pour rester carré
-            
-        }
-        Image {
-            id: icon
-            source: "../icon-splash.png"  // Mets ici ton icône
-            anchors.centerIn: parent
-
-            // 50% de la largeur de l'écran
-            width: parent.width * 0.5
-            height: width  // Pour rester carré
-
-            fillMode: Image.PreserveAspectFit
-        }
-      }  
+      ScreenSaverView {
+          id: screenSaverView
+      }
       
       //Webview-----------------------------------------------------------------------------------------------------
       WebEngineView {
@@ -261,10 +235,10 @@ MainView {
               
               if ( message.replace(/^\[ThemeBackgroundColorDebug\]\s*/, "") == "#FFFFFF" )
               {
-               screensaverBackground.source="../screensaver.png";
+               screenSaverView.backgroundSource="../screensaver.png";
               }
               else
-               screensaverBackground.source="../screensaver-black.png" ;
+               screenSaverView.backgroundSource="../screensaver-black.png" ;
             }
         }
         
@@ -281,65 +255,9 @@ MainView {
         visible: false
       }
       
-//--------------------------------------------------------------------------------------------
-// Toast Component should be moved to other source file
-//--------------------------------------------------------------------------------------------
-Rectangle {
+    Toast {
     id: toast
-    radius: 8
-    color: "#d9fdd3"
-    z:100
-    opacity: 0
-    visible: false
-    anchors.bottom: parent.bottom
-    anchors.left: parent.left 
-    anchors.bottomMargin: 14
-    anchors.leftMargin: 100
-   // La taille s'adapte automatiquement au texte
-    implicitWidth: toastRow.width + 24
-    implicitHeight: toastRow.height + 3
-
-    Row {
-        id: toastRow
-        anchors.centerIn: parent
-        spacing: 7 // espace entre icône et texte
-        padding: 12
-
-        Image {
-            id: toastIcon
-            source: Qt.resolvedUrl("Icons/check.png")  // ton icône ici
-            width: 20
-            height: 20
-            visible: source !== ""
-        }
-
-        Text {
-            id: toastText
-            color: "black"
-            font.pixelSize: 14
-            font.bold: true
-        }
     }
-
-    Behavior on opacity {
-        NumberAnimation { duration: 300 }
-    }
-
-    Timer {
-        id: timer
-        repeat: false
-        interval: 2000
-        onTriggered: { toast.opacity = 0; Qt.callLater(() => toast.visible = false) }
-    }
-
-    function show(msg) {
-        toastText.text = msg
-        toast.visible = true
-        toast.opacity = 1
-        timer.restart()
-    }
-  }
-  //--------------------------------------------------------------------------------------------------------
 
       
     }

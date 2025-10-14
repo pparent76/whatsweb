@@ -251,7 +251,6 @@ function main(){
 // Handle Main navigation to chatWindow
 //---------------------------------------------
 window.addEventListener("click", function() {
-  
   lastClickEditable=0
   const grid = event.target.closest('[role="grid"]');
   if (grid) {
@@ -270,7 +269,7 @@ window.addEventListener("click", function() {
       lastClickEditable=1;
       }
   }
-  
+ 
 }); 
 
 //----------------------------------------------------
