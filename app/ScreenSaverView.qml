@@ -29,11 +29,4 @@ Rectangle {
         fillMode: Image.PreserveAspectFit
     }
 
-    // --- Animation douce (optionnelle) ---
-    SequentialAnimation on opacity {
-        loops: Animation.Infinite
-        running: visible
-        NumberAnimation { from: 1; to: 0.8; duration: 2000; easing.type: Easing.InOutQuad }
-        NumberAnimation { from: 0.8; to: 1; duration: 2000; easing.type: Easing.InOutQuad }
-    }
 }
