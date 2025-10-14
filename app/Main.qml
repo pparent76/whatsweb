@@ -8,7 +8,6 @@ import Qt.labs.settings 1.0
 import QtSystemInfo 5.5
 import Ubuntu.Components.ListItems 1.3 as ListItemm
 import Ubuntu.Content 1.3
-import Pparent.Notifications 1.0
 import Pparent.DownloadHelper 1.0  
 
 
@@ -23,11 +22,6 @@ MainView {
   property int lastUnreadCount: -1;
   property var lastNotifyTimestamp: 0;  
 
-  //Object from notification module
-  NotificationHelper {
-        id: notifier
-        push_app_id:appID+"_"+hook
-  }
     
  DownloadHelper {
         id: downloadHelper
@@ -35,56 +29,12 @@ MainView {
     }   
     
     
-  //Function to allow notification while avoiding flooding at the same time
-  function notifyBackup(title,msg) {
-      var currentTimestamp=Date.now();  // timestamp en millisecondes
-        if (currentTimestamp - lastNotifyTimestamp > 5000) {
-            //Send notifications only if app is not active
-            if (!(Qt.application.active))
-            {
-              lastNotifyTimestamp=currentTimestamp;  
-              notifier.showNotificationMessage(title,msg);
-            }
-        }
-  }
-  
-  function notifyMain(title,msg) {
-      if (!(Qt.application.active))
-      { 
-        lastNotifyTimestamp=Date.now();  // timestamp en millisecondes
-        notifier.showNotificationMessage(title,msg);
-      }
-  }  
+ Notifier {
+    id: notifier
+     push_app_id: appID + "_" + hook
+ }
 
 
-  Timer {
-    id: timer1
-    running: false
-    repeat: false
-    interval: 2000
-    onTriggered: function() {
-    notifyBackup("New Whatsapp Audio Notification","")
-    timer1.running = false;
-    }
-  }
-  
-  Timer {
-    id: timer2
-    running: false
-    repeat: false
-    interval: 1100
-    property string msg: "notif"    
-    onTriggered: function() {
-    notifyBackup(msg,"")
-    timer2.running = false;
-    }
-  }
-
-
-  ScreenSaver {
-    id: screenSaver
-    screenSaverEnabled: !(Qt.application.active)
-  }
   objectName: "mainView"
   //theme.name: "Ubuntu.Components.Themes.SuruDark"
   applicationName: appID
@@ -93,6 +43,12 @@ MainView {
 
   property list<ContentItem> importItems
 
+  
+  ScreenSaver {
+    id: screenSaver
+    screenSaverEnabled: !(Qt.application.active)
+  }
+  
   PageStack {
     id: mainPageStack
     anchors.fill: parent
@@ -136,7 +92,7 @@ MainView {
           //  Notification based on web desktop notifications (Higher priority)
           //----------------------------------------------------------------------   
           onPresentNotification: (notification) => {
-                 notifyMain(notification.title, notification.message);
+                notifier.notifyMain(notification.title, notification.message);
           }
           
           onDownloadRequested: {
@@ -180,7 +136,7 @@ MainView {
 	    grantFeaturePermission(securityOrigin, feature, true);
         }
         //----------------------------------------------------------------------
-        //   Notification based on title changed (Medium priority wait 100ms)
+        //   Notification based on title changed (medium priority)
         //----------------------------------------------------------------------        
         onTitleChanged: {
              // 1a. look for a number inside parentheses at start or end
@@ -191,9 +147,7 @@ MainView {
             }
             if ( unread>lastUnreadCount && unread>0  )
             {
-              //Send notification in 25ms through timer2
-              timer2.msg = unread+" whatsapp message unread";
-              timer2.running = true;
+              notifier.triggerDelayedNotification2(unread+" whatsapp message unread");
             }
             lastUnreadCount=unread
             if (unread > 0)
@@ -203,14 +157,14 @@ MainView {
         }
         
 
-        //----------------------------------------------------------------------------
-        //  Notification based on audio sound file played (LOWER PRIORITY wait 300ms)
-        //----------------------------------------------------------------------------
+
         onJavaScriptConsoleMessage: function(level, message, line, sourceId) {
-            
+          //----------------------------------------------------------------------------
+          //  Notification based on audio sound file played (Low priority)
+          //---------------------------------------------------------------------------
             if (message.startsWith("[DbgAud] https://static.whatsapp.net/")) {
                 //Send notification in 50ms through timer1
-                timer1.running = true;
+                notifier.triggerDelayedNotification1("New Whatsapp audio notification");
             }
             if (message.startsWith("[ClipBoardCopy]")) {
                 //Send notification in 50ms through timer1
@@ -246,10 +200,8 @@ MainView {
 
       } //End webview--------------------------------------------------------------------------------------------
       
-      
-      
 
-
+      //Dummy textedit to me able to copy to ClipBoard
      TextEdit{
         id: textEdit
         visible: false
