@@ -197,6 +197,7 @@ MainView {
               }
               else
                screenSaverView.backgroundSource="Backgrounds/screensaver-black.png" ;
+              notificationsHowto.visible= false;
             }
         }
         
@@ -213,6 +214,11 @@ MainView {
       
     Toast {
     id: toast
+    }
+    
+    NotificationsHowto{
+      id: notificationsHowto
+      pageStack: mainPageStack
     }
 
       
