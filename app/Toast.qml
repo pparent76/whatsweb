@@ -1,6 +1,6 @@
 // Toast.qml
-import QtQuick 2.15
-import QtQuick.Controls 2.15
+import QtQuick 2.9
+import QtQuick.Controls 2.9
 
 Rectangle {
     id: root
