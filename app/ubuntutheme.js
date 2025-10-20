@@ -8,6 +8,8 @@
 
 
 const X = {
+  app: () => document.querySelector("#app"),
+  browser: () => document.getElementById('app').getElementsByClassName('browser')[0] ,
   //MainWrapper stuff (element class two)----------------------------------------------------
   mainWrapper: () => document.querySelector('.two'),  
     unkownSection1: () => document.querySelector('.two').childNodes[1],
@@ -17,6 +19,7 @@ const X = {
       leftSettingPannel: () => document.querySelector('.two').childNodes[2].childNodes[0], // leftMenus (Settings, status, community, profile, ...)
     chatList: () => document.querySelector('.two').childNodes[3],
     chatWindow: () => document.querySelector('.two').childNodes[4],
+      chatHeader: () => document.querySelector('.two').childNodes[4].querySelector('header'),
   //-------------------------------------------------------------------------------------------
 
   upperWrapper: () => document.querySelector('.three'),
@@ -35,7 +38,14 @@ const X = {
   landingWrapper: () => document.querySelector('.landing-wrapper'),
   landingHeader: () => document.querySelector('.landing-header'),
   mainDiv: () =>  document.querySelector("div#main"),
-  chatHeader: () =>  document.querySelector("div#main").querySelector("header")
+  chatHeader: () =>  document.querySelector("div#main").querySelector("header"),
+  
+  dialog: () =>document.querySelector('[role="dialog"]'),
+  
+  
+  
+  //-----------------------------------------------------------------------------------------
+  isInCommunityPannel: () => (document.querySelector("[role=navigation]") != null)
 };
 
 //-------------------------------------------------------------------------------------
@@ -75,16 +85,24 @@ document.addEventListener("touchend", () => {
 
   
 });
-    
+   
+window.addEventListener("click", function() {
+  //Handle events for Quick Copy to ClipBoard
+  const selection = window.getSelection();
+  const selectedText = selection.toString().trim();
+  if (selectedText.length == 0) {
+      if (copiedMessage1) copiedMessage1 = null;
+      else copiedMessage2 = null;
+  } 
+},800);
     
 // Declare variables
 updatenotificacion = 0;
 allownotification = 0;
-var lastClickContact = 0;
-var lastClickEditable = 0;
-var isInArchivedMenu = 0;
-var isInNewChatMenu = 0;
-var isInCommunity = 0;
+var lastClickEl=null;
+var lastFocusEl=null;
+var needToShowChatWindow=0;
+var firstChatLoad=1;
 
 //-----------------------------------------------------
 //Request by default webnofications permission
@@ -102,6 +120,7 @@ Notification.requestPermission();
       newCss.innerHTML = cssString;
       head.appendChild(newCss);
   }
+  
   
 // Listeners to startup APP
 window.addEventListener("load", function(event) {
@@ -123,7 +142,7 @@ document.addEventListener('readystatechange', event => {
 var check = 0;
 var checkExist = setInterval(function() {
   
-  if (document.getElementById('app').getElementsByClassName('browser')[0]) {
+  if (X.browser()) {
     clean();
     location.reload();
   } else {
@@ -151,26 +170,32 @@ function main(){
   console.log("Call main function")
   
   //Adapt fontsize
+  addCss(".customDialog { transform: scaleX(0.8) scaleY(0.8) !important; transition: transform 0.3s ease !important; }");    
+  addCss(".emojiDialog { transform: scaleX(0.7) scaleY(0.7) !important; transition: transform 0.3s ease !important; transformOrigin = left bottom !important; left:2% !important; }");     
   addCss("span { font-size: 104% !important; }");    
   addCss(".selectable-text { font-size: 110% !important; }");  
   addCss(".message-out {  padding-right: 20px !important; }");
   addCss(".message-in {  padding-left: 20px !important; }");  
   
   X.overlayMenus().style.width="0";
-  
   showchatlist();  
   X.chatList().style.minWidth = "100%"
   X.chatWindow().style.minWidth = "100%"  
    X.mainWrapper().style.minWidth = 'auto';
    X.mainWrapper().style.minHeight = 'auto';
    
-  //Avoid opening the keyboard when entering a chat
+   //------------------------------------------------------
+   //  Avoid opening the keyboard when entering a chat
+  //-------------------------------------------------------
   document.body.addEventListener('focusin', (event) => {
-  const el = event.target;
-    if ( lastClickEditable == 0 && el.isContentEditable)
+    const el = event.target;
+    lastFocusEl=el;
+    if ( (el.isContentEditable || el.classList.contains("contenteditableDisabled") ) && (! lastClickEl.isContentEditable ) )
     {
-      el.blur();
+     el.setAttribute('contenteditable', false);
+     el.classList.add('contenteditableDisabled') 
     }
+    
   });
 
   addLeftMenuButtonToChatList();
@@ -182,42 +207,35 @@ function main(){
   //Fix emoticons panel
   if (X.smileyWrapper()) {
     const observer = new MutationObserver((mutationsList) => {
-          X.smileyPanel().style.transformOrigin = "left bottom"; 
-          X.smileyPanel().style.transform= 'scale(0.7)';
-          X.smileyPanel().style.left= '2%'; 
-          setTimeout(() => {
-          X.smileyPanel().style.transform= 'scale(0.7)';
-          }, 300);
-          setTimeout(() => {
-          X.smileyPanel().style.transform= 'scale(0.7)';
-          }, 1000);          
+          X.smileyPanel().style.transformOrigin = "left bottom";
+          X.smileyPanel().classList.add('emojiDialog') 
     });
     observer.observe(X.smileyWrapper(), { childList: true, subtree: true });
   }
   
-  //Send theme information to mainView
-  console.log("[ThemeBackgroundColorDebug]"+getComputedStyle(X.leftMenu()).getPropertyValue('--WDS-surface-default').trim());
-
-  //Open menu for new chat list
-  X.newChatButton().addEventListener('click', () => {
-    isInNewChatMenu=1; isInCommunity=0; isInArchivedMenu=0;
-    if ( X.leftMenu().style.display == 'none' )
-        toggleLeftMenu();
-  });
-  
-  //Open menu for archivedMenu
-  if (X.archivedChatButton().tagName.toLowerCase() === 'button') {
-    X.archivedChatButton().addEventListener('click', () => {
-      isInArchivedMenu=1;isInCommunity=0; isInNewChatMenu=0;
-      if ( X.leftMenu().style.display == 'none' )
-          toggleLeftMenu();
-    });  
+  //Changes observed in left menu
+  if (X.leftSettingPannel()) {
+    const observer = new MutationObserver((mutationsList) => {
+          if ( X.leftMenu().style.display == 'none' && X.chatList().style.left != "-100%" )
+              toggleLeftMenu();
+    });
+    observer.observe(X.leftSettingPannel(), { childList: true, subtree: true });
   }
   
   
+  //Send theme information to mainView
+  console.log("[ThemeBackgroundColorDebug]"+getComputedStyle(X.leftMenu()).getPropertyValue('--WDS-surface-default').trim());
+
+  
   // Créer un observer pour le body
-  const observer = new MutationObserver((mutations, obs) => {
+  const observer3 = new MutationObserver((mutations, obs) => {
     
+    if (X.dialog())
+    {
+      X.dialog().style.minWidth="100%"
+      X.dialog().firstChild.classList.add('customDialog')
+    }
+  
     if (document.querySelector('.three')) {
     // Handle contactInfo Openned panel
     if (X.upperWrapper() !== undefined){
@@ -232,7 +250,7 @@ function main(){
   });
 
   // Observer le body entier pour toutes les modifications
-  observer.observe(document.body, {
+  observer3.observe(document.body, {
     childList: true,
     subtree: true
   });  
@@ -246,149 +264,72 @@ function main(){
 //  Analize JS after every click on APP and execute Actions
 //------------------------------------------------------------
 //---------------------------------------------------------------------
-
-//---------------------------------------------
-// Handle Main navigation to chatWindow
-//---------------------------------------------
 window.addEventListener("click", function() {
-  lastClickEditable=0
-  const grid = event.target.closest('[role="grid"]');
-  if (grid) {
-      if (lastClickContact==0)
-      {
-        showchatWindow();     
-      }
-      lastClickContact=1
-  }
-  else
-  {
-      lastClickContact=0
-      const el=event.target;
-      if ( el && el.isContentEditable) 
-      {
-      lastClickEditable=1;
-      }
-  }
- 
-}); 
+  //Backup Back button
+  setTimeout( () => {
+  backupBackButton();
+  },400);
+})
 
-//----------------------------------------------------
-// Security to add back buttons it not present
-//---------------------------------------------------
 window.addEventListener("click", function() {
-backupBackButton();
-}); 
-
-function backupBackButton()
-{
- if (X.chatList().style.left== "-100%") {
-  if ( X.mainDiv() && X.chatHeader() )
-  {
-    if (! X.chatHeader().querySelector('#back_button') )
-    {
-    addBackButtonToChatView();  
-    }
-  }
-  else
-  {
-    showchatlist()
-  }
-} 
-}
+  //Register Last clicked element
+  lastClickEl=event.target;  
   
-//---------------------------------------------
-// Handle navigation form leftmenu to chatWindow
-//---------------------------------------------
-window.addEventListener("click", function() {
-  
-  //Cette fonction gère seulement si le menu de gauche est affiché
-  if ( X.leftMenu().style.display == 'none' )
-    return;
-  
-  //Click on a chat in menu -> Show chat menu
-  if (isInNewChatMenu ==1
-    && event.target.closest('[role="listitem"]')
-    && event.target.closest('[role="listitem"]').firstElementChild.getAttribute('role') === 'button'){
-      showchatWindow();
-  }  
-  
-  if ( event.target.getAttribute('data-icon') === 'community-filled-refreshed-32' || event.target.getAttribute('data-icon') === 'community-refreshed-32')
-  {
-   isInCommunity=1;
-   isInArchivedMenu=0;
-   isInNewChatMenu=0;    
-   addBackButtonToChatViewWithTimeout();   
-  }
-  
-
-  //Changing view in menus
-  if (event.target.getAttribute('data-icon') === 'status-refreshed' 
-    || event.target.getAttribute('data-icon') === 'newsletter-outline'
-    || event.target.getAttribute('data-icon') === 'settings-refreshed'
-    || event.target.getAttribute('data-icon') === 'status-filled-refreshed' 
-    || event.target.getAttribute('data-icon') === 'newsletter-outline'
-    || event.target.getAttribute('data-icon') === 'settings-filled-refreshed')
-  {
-    console.log("view changed")
-   isInArchivedMenu=0;
-   isInNewChatMenu=0;
-   isInCommunity=0;
-  }
-  
-  
-  //Click on a chat in menu -> Show chat menu
-  if (isInArchivedMenu ==1
-    && X.leftSettingPannel().contains(event.target) 
-    && event.target.closest('[role="listitem"]')
-    && event.target.closest('[role="listitem"]').firstElementChild.hasAttribute('aria-selected')){
-      showchatWindow();
-  }
-  
-  //Click on a chat in menu -> Show chat menu
-  if (isInNewChatMenu ==1
-    && X.leftSettingPannel().contains(event.target) 
-    && event.target.closest('[role="listitem"]')
-    && event.target.closest('[role="listitem"]').firstElementChild.getAttribute('role') === 'button'){
-      showchatWindow();
-  }  
-
-  //Click on a chat in menu -> Show chat menu
-  if (isInCommunity ==1
-    && X.leftSettingPannel().contains(event.target) 
-    && event.target.closest('[role="listitem"]')){
-      if (event.target.closest('[role="listitem"]').querySelector("[title]"))
-        showchatWindow();
-      else
-        addBackButtonToChatViewWithTimeout();
-  }  
-  
-  if (event.target.getAttribute('data-icon') === 'chat-filled-refreshed' || event.target.getAttribute('data-icon') === 'chat-refreshed')
-  {
-   isInArchivedMenu=0;
-   isInNewChatMenu=0;  
-   isInCommunity=0;
-   addBackButtonToChatViewWithTimeout();   
-  }
+  setTimeout( () => {
+   //---------------------------------------------------------------------------------
+   //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+   // Important section: Handle navigation towards chatWindow
+   //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+  //----------------------------------------------------------------------------------
     
-}); 
-  
-//---------------------------------------------
-// Handle quick copy to ClipBoard
-//---------------------------------------------
-window.addEventListener("click", function() {
-  //For Quick Copy to ClipBoard system
-  if ( lastClickContact != 1 )
+  //Triger chatWindow from main Chatlist
+  if (lastClickEl.closest('[role="grid"]'))
+        showchatWindow();
+    
+  if ( X.isInCommunityPannel() )
   {
-    const selection = window.getSelection();
-    const selectedText = selection.toString().trim();
-    if (selectedText.length == 0) {
-      if (copiedMessage1) copiedMessage1 = null;
-      else copiedMessage2 = null;
-    }
+  //Special detect for in-community Panel
+    if (X.leftSettingPannel().contains(lastClickEl) && lastClickEl.closest('[role="listitem"]') &&
+      lastClickEl.closest('[role="listitem"]').closest('[role="listitem"]').querySelector("[title]"))
+        showchatWindow();
   }
-
+  else
+  {
+    //If the focus was requested to ChatWindow
+    if (X.chatWindow().contains(lastFocusEl) )
+    {
+      //Click form Settings Panel (except community panel) -> proceed and open the chatWindow
+        if( X.leftSettingPannel().contains(lastClickEl) )
+        {
+        //We have clicked on an element of left window
+        showchatWindow();
+        }
+        else
+        {
+          //The leftmenu is open and we have click on an orpheline listitem  -> proceed and open the chatWindow
+          if (
+            X.leftMenu().style.display != 'none'  
+            && ! X.app().contains(lastClickEl) 
+            && lastClickEl.closest("[role=listitem]")  
+          )
+          {
+          showchatWindow();
+          }
+        }
+    }
+      
+  }
   
-});
+  //(Re)-enable content Editable ( If it was disabled when "OnFocus" was called without click)
+  if ( lastClickEl.closest('.contenteditableDisabled')  )
+  {
+    lastClickEl.closest('.contenteditableDisabled').setAttribute('contenteditable', true);
+    lastClickEl.closest('.contenteditableDisabled').classList.remove('contenteditableDisabled') 
+  }
+  needToShowChatWindow=0;
+  },5);
+  
+}); 
 
 //------------------------------------------------------------------------------------
 //          Function To display or hide left menu
@@ -410,11 +351,16 @@ function toggleLeftMenu(){
         X.uploadPannel().style.minWidth="";   
         X.leftSettingPannel().style.display="";
         X.leftSettingPannel().style.maxWidth="85%";            
-        X.leftSettingPannel().style.minWidth="85%";    
+        X.leftSettingPannel().style.minWidth="85%";  
+        X.chatWindow().style.position="absolute"
+        X.chatWindow().style.left="0"
+        X.leftMenu().style.marginRight="-1px"
         
       }
       else
       {
+        X.chatWindow().style.position=""
+        X.chatWindow().style.left=""
         X.chatList().style.position= 'absolute';
         X.chatList().style.left= '0';
         X.overlayMenus().style.minWidth = "0%"
@@ -478,28 +424,33 @@ function addBackButtonToChatView(){
 //         Function to show main chat list view
 //----------------------------------------------------------------------------
 function showchatlist(){
-  //Make sure to unfocus any focused élément of previous view  
-  document.activeElement.blur();
+  
+ if ( X.leftMenu().style.display != 'none')
+   toggleLeftMenu()
   
   //Slide back Chatlist panel to main view  
-  X.chatList().style.transition= "left 0.30s ease-in-out";
+  X.chatList().style.transition= "left 0.25s ease-in-out";
   X.chatList().style.position= 'absolute';
-  X.chatList().style.left= '0';
+  X.chatList().style.left= '0'; 
   
-  //Comming back to community pannel, and left pannel was open close it
-  if (isInCommunity ==1 && X.leftMenu().style.display != 'none' )
-  {
-        toggleLeftMenu();
-  }
-
+  
+  document.querySelectorAll(".contenteditableDisabled").forEach(el2 => {
+    el2.classList.remove('contenteditableDisabled') 
+    el2.setAttribute("contenteditable", "true");
+  });
 }
 
 function showchatWindow(){
   //Make sure to unfocus any focused élément of previous view
    document.activeElement.blur();
    
+   X.chatWindow().style.position=""
+   X.chatWindow().style.left=""
+        
+   needToShowChatWindow=0;
+   
    //Slide Chatlist panel to the left
-   X.chatList().style.transition= "left 0.30s ease-in-out";
+   X.chatList().style.transition= "left 0.25s ease-in-out";
    X.chatList().style.position= 'absolute'; 
    X.chatList().style.left= "-100%";
    
@@ -532,12 +483,28 @@ function addBackButtonToChatViewWithTimeout()
     }, 1500); 
   
 }
+
+function backupBackButton()
+{
+ if (X.chatList().style.left== "-100%") {
+  if ( X.mainDiv() && X.chatHeader() )
+  {
+    if (! X.chatHeader().querySelector('#back_button') )
+    {
+    addBackButtonToChatView();  
+    }
+  }
+  else
+  {
+    showchatlist()
+  }
+} 
+}
 //-----------------------------------------------------------------------------
 //         Functions to handle contactInfo pannel
 //----------------------------------------------------------------------------
 
 function inchatcontactandgroupinfo(){
-  // console.log("inchatcontactandgroupinfo")
   if (X.contactInfo()){
       //We need for this section to use absolute postion
       X.contactInfo().style.position= "absolute";
@@ -546,8 +513,6 @@ function inchatcontactandgroupinfo(){
       X.contactInfo().style.pointerEvents="none";
   }
 }
-
-
 
 //-----------------------------------------------------------------------------
 //                           Clean
@@ -679,8 +644,6 @@ var downloadedBlob;
         try {
           const href = target.href;
           if (href.startsWith('blob:')) {
-            //console.log('[DownloadBlob]', href);
-            // si tu veux aussi accéder au Blob objet :
             const entry = blobMap.get(href);
             downloadedBlob=entry;
             saveBlob(downloadedBlob.blob,"testpierre")
