@@ -80,13 +80,42 @@ QString findNewestFileRecursive(const QString &dirPath) {
     return newestFile.absoluteFilePath();
 }
 
+void clearCache(const QString &dirPath, const QString &fileToKeep)
+{
+    QDirIterator it(dirPath, QDir::Files, QDirIterator::Subdirectories);
+
+    while (it.hasNext()) {
+        it.next();
+        QFileInfo fi = it.fileInfo();
+
+        // Vérifie que le fichier a une extension
+        const QString fileName = fi.fileName();
+        bool hasExtension = fileName.contains('.') && !fileName.startsWith('.');
+
+        // Ignore if does not have extension or is file to keep
+        if (!hasExtension || fi.absoluteFilePath() == fileToKeep)
+            continue;
+
+        // Ignore symlinks
+        if (fi.isSymLink())
+            continue;
+        
+        // Supprime le fichier
+        QFile file(fi.absoluteFilePath());
+        if (!file.remove()) {
+            qWarning() << "Could not delete" << fi.absoluteFilePath();
+        } else {
+            qDebug() << "Deleted :" << fi.absoluteFilePath();
+        }
+    }
+}
 
 QString DownloadHelper::getLastDownloaded()
 {
 
     QString dirPath = blob_path;
     QString newestFilePath = findNewestFileRecursive(dirPath);
-
+    clearCache(dirPath,newestFilePath);
     if (newestFilePath.isEmpty())
         return "Error File empty";
 
@@ -101,6 +130,8 @@ QString DownloadHelper::getLastDownloaded()
     QString ext = detectExtension(header);
 
     QString targetPath = newestFilePath;
+    
+    
     if (!ext.isEmpty()) {
         targetPath += "." + ext;
         if (!QFile::copy(newestFilePath, targetPath)) {
