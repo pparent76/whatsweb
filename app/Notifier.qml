@@ -9,7 +9,7 @@ Item {
 
     // === Propriétés configurables depuis l'extérieur ===
     property string push_app_id: "defaultApp"
-    property int floodDelay: 5000   // délai anti-flood (ms)
+    property int floodDelay: 6500   // délai anti-flood (ms)
     property double timer1Interval: 2500
     property double timer2Interval: 1400
 
