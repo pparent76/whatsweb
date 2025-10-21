@@ -205,12 +205,12 @@ function main(){
    //  Avoid opening the keyboard when entering a chat
   //-------------------------------------------------------
   document.body.addEventListener('focusin', (event) => {
-    const el = event.target;
-    lastFocusEl=el;
-    if ( (el.isContentEditable || el.classList.contains("contenteditableDisabled") ) && (! lastClickEl.isContentEditable ) )
+    lastFocusEl = event.target;
+    if ( lastFocusEl.isContentEditable  && (!lastClickEl || ! lastClickEl.isContentEditable ) )
     {
-     el.setAttribute('contenteditable', false);
-     el.classList.add('contenteditableDisabled') 
+      lastFocusEl.blur();
+      lastFocusEl.setAttribute('contenteditable', false);
+      lastFocusEl.classList.add('contenteditableDisabled');
     }
     
   });
