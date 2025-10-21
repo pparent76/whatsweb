@@ -191,9 +191,11 @@ MainView {
                 let output = downloadHelper.getLastDownloaded()
                 var exportPage = mainPageStack.push(Qt.resolvedUrl("ExportPage.qml"),{"url": Qt.resolvedUrl("file://"+output),"contentType": ContentType.All})
             } 
-            
+            if (message.startsWith("[HideAppControls]")) 
+            {
+              notificationsHowto.visible= false;
+            }
             if (message.startsWith("[ThemeBackgroundColorDebug]")) {
-              
               
               if ( message.replace(/^\[ThemeBackgroundColorDebug\]\s*/, "") == "#FFFFFF" )
               {
@@ -201,7 +203,6 @@ MainView {
               }
               else
                screenSaverView.backgroundSource="Backgrounds/screensaver-black.png" ;
-              notificationsHowto.visible= false;
             }
         }
         

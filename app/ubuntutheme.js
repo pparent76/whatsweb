@@ -43,6 +43,9 @@ const X = {
   dialog: () =>document.querySelector('[role="dialog"]'),
   
   
+  linkedDevicesInstructions: () => document.querySelector('#link-device-instructions-list'),
+  loginView: () => document.querySelector('#link-device-instructions-list').parentElement.parentElement.parentElement.parentElement.parentElement,
+  
   
   //-----------------------------------------------------------------------------------------
   isInCommunityPannel: () => (document.querySelector("[role=navigation]") != null)
@@ -150,10 +153,24 @@ var checkExist = setInterval(function() {
       X.landingWrapper().style.minWidth = 'auto';
       X.landingHeader().style.display = 'none';
     }
+    if (X.linkedDevicesInstructions())
+    {
+      X.loginView().style.width="100%"
+      X.loginView().style.height="100%"
+      X.loginView().style.position="fixed"
+      X.loginView().style.left="0"
+      X.loginView().style.top="0"
+      X.loginView().style.borderRadius= "0";
+      X.loginView().style.paddingLeft= "5%";
+      X.linkedDevicesInstructions().parentElement.parentElement.style.transformOrigin="left";
+      X.linkedDevicesInstructions().parentElement.parentElement.style.transform="scaleX(0.8) scaleY(0.8)";
+      console.log("[HideAppControls]")
+    }
     if (X.mainWrapper().childNodes.length) {
       console.log("Exists!");
       if ( check == 0 ) {
         clearInterval(checkExist);
+        console.log("[HideAppControls]")
         clean();
         main();
         check = 1;
