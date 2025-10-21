@@ -119,9 +119,13 @@ MainView {
         onFileDialogRequested: function(request) {
            request.accepted = true;
           var importPage = mainPageStack.push(Qt.resolvedUrl("ImportPage.qml"),{"contentType": ContentType.All, "handler": ContentHandler.Source})
-          importPage.imported.connect(function(fileUrl) {
-            console.log(String(fileUrl).replace("file://", ""))
-            request.dialogAccept(String(fileUrl).replace("file://", ""));
+          importPage.imported.connect(function(fileUrls) {
+            var files = []
+            var urls = fileUrls.split("\n")
+            for (var i = 0; i < urls.length; i++) {
+            files.push(urls[i].trim().replace("file://", ""));
+            }
+            request.dialogAccept(files);
             mainPageStack.pop(importPage)
           })
           importPage.cancel.connect(function() {

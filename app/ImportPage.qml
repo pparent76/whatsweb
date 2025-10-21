@@ -57,19 +57,26 @@ Page {
         handler: picker.handler //ContentHandler.Source
 
         onPeerSelected: {
-            peer.selectionType = ContentTransfer.Single
+            peer.selectionType = ContentTransfer.Multiple
             picker.activeTransfer = peer.request()
             picker.activeTransfer.stateChanged.connect(function() {
-				        if (picker.activeTransfer.state === ContentTransfer.InProgress) {
-					           console.log("In progress");
-					           picker.activeTransfer.items = picker.activeTransfer.items[0].url = url;
-					           picker.activeTransfer.state = ContentTransfer.Charged;
-				        }
+				        // if (picker.activeTransfer.state === ContentTransfer.InProgress) {
+					       //     console.log("In progress");
+					       //     picker.activeTransfer.items = picker.activeTransfer.items[0].url = url;
+					       //     picker.activeTransfer.state = ContentTransfer.Charged;
+				        // }
                 if (picker.activeTransfer.state === ContentTransfer.Charged) {
-					           console.log("Charged");
-                     picker.imported(picker.activeTransfer.items[0].url)
-					           console.log(picker.activeTransfer.items[0].url)
-                     picker.activeTransfer = null
+                    console.log("Charged");
+                    var res="";
+                    for (var i = 0; i < picker.activeTransfer.items.length; i++) {
+                            if (res == "")
+                                res=picker.activeTransfer.items[i].url
+                            else
+                                res=res+"\n"+picker.activeTransfer.items[i].url
+                           
+                        }
+                    picker.imported(res)
+                    picker.activeTransfer = null
                 }
             })
         }
