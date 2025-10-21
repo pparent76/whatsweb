@@ -36,7 +36,6 @@ MainView {
 
 
   objectName: "mainView"
-  //theme.name: "Ubuntu.Components.Themes.SuruDark"
   applicationName: appID
   backgroundColor : "transparent"
 
@@ -48,9 +47,14 @@ MainView {
     id: screenSaver
     screenSaverEnabled: !(Qt.application.active)
   }
+ 
+  ScreenSaverView {
+          id: screenSaverView
+  } 
   
   PageStack {
     id: mainPageStack
+    visible: Qt.application.active
     anchors.fill: parent
     Component.onCompleted: mainPageStack.push(pageMain)
 
@@ -58,11 +62,6 @@ MainView {
     Page {
       id: pageMain
       anchors.fill: parent
-      
-      
-      ScreenSaverView {
-          id: screenSaverView
-      }
       
       //Webview-----------------------------------------------------------------------------------------------------
       WebEngineView {

@@ -145,10 +145,10 @@ document.addEventListener('readystatechange', event => {
 var check = 0;
 var checkExist = setInterval(function() {
   
-  if (X.browser()) {
-    clean();
-    location.reload();
-  } else {
+  // if (X.browser()) {
+  //   clean();
+  //   location.reload();
+  // } else {
     if (X.landingWrapper()) {
       X.landingWrapper().style.minWidth = 'auto';
       X.landingHeader().style.display = 'none';
@@ -171,12 +171,12 @@ var checkExist = setInterval(function() {
       if ( check == 0 ) {
         clearInterval(checkExist);
         console.log("[HideAppControls]")
-        clean();
+        //clean();
         main();
         check = 1;
       }
     }
-  }
+  // }
 }, 1000);
 
 //----------------------------------------------------------------------
@@ -535,14 +535,14 @@ function inchatcontactandgroupinfo(){
 //                           Clean
 //----------------------------------------------------------------------------
 
-function clean() {
-  navigator.serviceWorker.getRegistrations().then(function(registrations) {
-  for(let registration of registrations) {
-          registration.unregister()
-  }}).catch(function(err) {
-      console.log('Service Worker registration failed: ', err);
-  });
-}
+// function clean() {
+//   navigator.serviceWorker.getRegistrations().then(function(registrations) {
+//   for(let registration of registrations) {
+//           registration.unregister()
+//   }}).catch(function(err) {
+//       console.log('Service Worker registration failed: ', err);
+//   });
+// }
 
 
 //-----------------------------------------------------------------------
