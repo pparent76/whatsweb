@@ -1,0 +1,22 @@
+import QtQuick 2.15
+import Ubuntu.Components 1.3
+
+Row {
+    property alias text: label.text
+    property alias checked: switcher.checked
+
+    height: Math.max(label.implicitHeight, switcher.implicitHeight) + units.gu(0.75) * 2    
+    width: parent ? parent.width : units.gu(40)
+    spacing: units.gu(2)
+    leftPadding: units.gu(5)    
+    Label {
+        id: label
+        text: "Option"
+        wrapMode: Text.Wrap
+        color: "#000000"
+    }
+    Switch {
+        id:switcher
+    }
+}
+ 

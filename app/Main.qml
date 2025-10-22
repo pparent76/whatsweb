@@ -8,7 +8,7 @@ import Qt.labs.settings 1.0
 import QtSystemInfo 5.5
 import Ubuntu.Components.ListItems 1.3 as ListItemm
 import Ubuntu.Content 1.3
-import Pparent.DownloadHelper 1.0  
+import Pparent.DownloadHelper 1.0
 
 
 MainView {
@@ -22,6 +22,27 @@ MainView {
   property int lastUnreadCount: -1;
   property var lastNotifyTimestamp: 0;  
 
+    
+  Settings {
+        id: config
+        category: "AppSettings"
+
+        property int webviewWidthPortait: 410
+        property int webviewWidthLandscape: 900
+        property int textFontSize: 110
+        property int spanFontSize: 104
+
+        property bool enableDesktopNotifications: true
+        property bool enableTitleChangeNotifications: true
+        property bool enableSoundNotifications: true
+        property bool enableNotificationCounter: true
+
+        property bool enableScreensaver: true
+        property bool disableBackgroundAudio: true
+
+        property bool enableQuickCopy: true
+        property bool enableGpu: true
+    }
     
  DownloadHelper {
         id: downloadHelper
@@ -38,23 +59,21 @@ MainView {
   objectName: "mainView"
   applicationName: appID
   backgroundColor : "transparent"
-
-
-  property list<ContentItem> importItems
-
   
+
   ScreenSaver {
     id: screenSaver
-    screenSaverEnabled: !(Qt.application.active)
+    screenSaverEnabled: !(Qt.application.active) 
   }
- 
+    
   ScreenSaverView {
           id: screenSaverView
+          visible: (! Qt.application.active) && config.enableScreensaver
   } 
   
   PageStack {
     id: mainPageStack
-    visible: Qt.application.active
+    visible: Qt.application.active || (! config.enableScreensaver)
     anchors.fill: parent
     Component.onCompleted: mainPageStack.push(pageMain)
 
@@ -62,18 +81,19 @@ MainView {
     Page {
       id: pageMain
       anchors.fill: parent
+      visible: Qt.application.active || (! config.enableScreensaver)
       
       //Webview-----------------------------------------------------------------------------------------------------
       WebEngineView {
         id: webview
-        audioMuted: !Qt.application.active
-        visible: Qt.application.active
+        audioMuted: config.disableBackgroundAudio && (!Qt.application.active)   
+        visible: Qt.application.active || (! config.enableScreensaver)
         property int keyboardSize: UbuntuApplication.inputMethod.visible ? 10+UbuntuApplication.inputMethod.keyboardRectangle.height/(units.gridUnit / 8) : 0
         anchors{ fill: parent }
         focus: true
         property var currentWebview: webview
         settings.pluginsEnabled: true
-        zoomFactor: mainView.width<mainView.height ? Math.round(100 * mainView.width / 410 ) / 100 : Math.round(100 * mainView.width / 900 ) / 100
+        zoomFactor: mainView.width<mainView.height ? Math.round(100 * mainView.width / config.webviewWidthPortait ) / 100 : Math.round(100 * mainView.width / config.webviewWidthLandscape ) / 100
         
         onKeyboardSizeChanged: {
         // Échapper correctement les quotes si nécessaire
@@ -91,6 +111,7 @@ MainView {
           //  Notification based on web desktop notifications (Higher priority)
           //----------------------------------------------------------------------   
           onPresentNotification: (notification) => {
+            if ( config.enableDesktopNotifications )
                 notifier.notifyMain(notification.title, notification.message);
           }
           
@@ -154,10 +175,12 @@ MainView {
             }
             if ( unread>lastUnreadCount && unread>0  )
             {
-              notifier.triggerDelayedNotification2(unread+" whatsapp message unread");
+               if ( config.enableTitleChangeNotifications )
+                  notifier.triggerDelayedNotification2(unread+" whatsapp message unread");
             }
             lastUnreadCount=unread
-            if (unread > 0)
+            
+            if ( unread > 0 && config.enableNotificationCounter )
               notifier.updateCount(unread)
             else
               notifier.updateCount(0)
@@ -170,16 +193,18 @@ MainView {
           //  Notification based on audio sound file played (Low priority)
           //---------------------------------------------------------------------------
             if (message.startsWith("[DbgAud] https://static.whatsapp.net/")) {
-                //Send notification in 50ms through timer1
-                notifier.triggerDelayedNotification1("New Whatsapp audio notification");
+                //Send notification
+                if ( config.enableSoundNotifications )
+                  notifier.triggerDelayedNotification1("New Whatsapp audio notification");
             }
             if (message.startsWith("[ClipBoardCopy]")) {
-                //Send notification in 50ms through timer1
+              if (config.enableQuickCopy)
+              {
                 textEdit.text = message.replace(/^\[ClipBoardCopy\]\s*/, "")
-                //textEdit.text = message
                 textEdit.selectAll()
                 textEdit.copy()
                 toast.show("Message copied!")
+              }
             }
             if (message.startsWith("[ShowDebug]")) {
                 toast.show(message.replace(/^\[ShowDebug\]\s*/, ""))
@@ -193,6 +218,7 @@ MainView {
             if (message.startsWith("[HideAppControls]")) 
             {
               notificationsHowto.visible= false;
+              settingsButton.visible= false;
             }
             if (message.startsWith("[ThemeBackgroundColorDebug]")) {
               
@@ -224,6 +250,27 @@ MainView {
       id: notificationsHowto
       pageStack: mainPageStack
     }
+    
+    
+      Image {
+            source: "Icons/gear.png"
+            id:settingsButton
+            width: 25
+            height: 25
+            anchors {
+              top: parent.top
+              right: parent.right
+              topMargin: units.gu(1)
+              rightMargin: units.gu(1)
+              }
+            MouseArea {
+                anchors.fill: parent
+                cursorShape: Qt.PointingHandCursor
+                onClicked: {
+                  mainPageStack.push(Qt.resolvedUrl("settingsPage.qml"),{"config":mainView.config})
+                }
+            }
+        }
 
       
     }

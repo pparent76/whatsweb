@@ -144,17 +144,13 @@ document.addEventListener('readystatechange', event => {
 //------------------------------------------------------
 var check = 0;
 var checkExist = setInterval(function() {
-  
-  // if (X.browser()) {
-  //   clean();
-  //   location.reload();
-  // } else {
     if (X.landingWrapper()) {
       X.landingWrapper().style.minWidth = 'auto';
       X.landingHeader().style.display = 'none';
     }
     if (X.linkedDevicesInstructions())
     {
+      //Make the login page responsive
       X.loginView().style.width="100%"
       X.loginView().style.height="100%"
       X.loginView().style.position="fixed"
@@ -167,21 +163,19 @@ var checkExist = setInterval(function() {
       console.log("[HideAppControls]")
     }
     if (X.mainWrapper().childNodes.length) {
-      console.log("Exists!");
       if ( check == 0 ) {
         clearInterval(checkExist);
         console.log("[HideAppControls]")
-        //clean();
         main();
         check = 1;
       }
     }
-  // }
 }, 1000);
 
 //----------------------------------------------------------------------
-//            Define all the functions to work on it
-//           (Called one time when main app is loaded)
+//!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+//                Main function
+//!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 //----------------------------------------------------------------------
 function main(){
   console.log("Call main function")
@@ -221,7 +215,9 @@ function main(){
      X.leftMenu().style.display = 'none';
    }
     
+  //-------------------------------------
   //Fix emoticons panel
+  //-------------------------------------
   if (X.smileyWrapper()) {
     const observer = new MutationObserver((mutationsList) => {
           X.smileyPanel().style.transformOrigin = "left bottom";
@@ -230,7 +226,9 @@ function main(){
     observer.observe(X.smileyWrapper(), { childList: true, subtree: true });
   }
   
-  //Changes observed in left menu
+  //-------------------------------------------------
+  //Open left panel when changes are detected in it
+  //-------------------------------------------------
   if (X.leftSettingPannel()) {
     const observer = new MutationObserver((mutationsList) => {
           if ( X.leftMenu().style.display == 'none' && X.chatList().style.left != "-100%" )
@@ -265,8 +263,7 @@ function main(){
     backupBackButton()
     
   });
-
-  // Observer le body entier pour toutes les modifications
+  // Observe the whole body
   observer3.observe(document.body, {
     childList: true,
     subtree: true
@@ -281,33 +278,26 @@ function main(){
 //  Analize JS after every click on APP and execute Actions
 //------------------------------------------------------------
 //---------------------------------------------------------------------
-window.addEventListener("click", function() {
-  //Backup Back button
-  setTimeout( () => {
-  backupBackButton();
-  },400);
-})
 
 window.addEventListener("click", function() {
   //Register Last clicked element
   lastClickEl=event.target;  
   
-  setTimeout( () => {
    //---------------------------------------------------------------------------------
    //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
    // Important section: Handle navigation towards chatWindow
    //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-  //----------------------------------------------------------------------------------
-    
-  //Triger chatWindow from main Chatlist
+  //----------------------------------------------------------------------------------  
   if (lastClickEl.closest('[role="grid"]'))
         showchatWindow();
+  
+  setTimeout( () => {
     
   if ( X.isInCommunityPannel() )
   {
   //Special detect for in-community Panel
     if (X.leftSettingPannel().contains(lastClickEl) && lastClickEl.closest('[role="listitem"]') &&
-      lastClickEl.closest('[role="listitem"]').closest('[role="listitem"]').querySelector("[title]"))
+      lastClickEl.closest('[role="listitem"]').querySelector("[title]"))
         showchatWindow();
   }
   else
@@ -324,9 +314,7 @@ window.addEventListener("click", function() {
         else
         {
           //The leftmenu is open and we have click on an orpheline listitem  -> proceed and open the chatWindow
-          if (
-            X.leftMenu().style.display != 'none'  
-            && ! X.app().contains(lastClickEl) 
+          if ( ! X.app().contains(lastClickEl) 
             && lastClickEl.closest("[role=listitem]")  
           )
           {
@@ -348,6 +336,12 @@ window.addEventListener("click", function() {
   
 }); 
 
+window.addEventListener("click", function() {
+  //Backup Back button
+  setTimeout( () => {
+  backupBackButton();
+  },400);
+})
 //------------------------------------------------------------------------------------
 //          Function To display or hide left menu
 //------------------------------------------------------------------------------------
@@ -463,8 +457,6 @@ function showchatWindow(){
    
    X.chatWindow().style.position=""
    X.chatWindow().style.left=""
-        
-   needToShowChatWindow=0;
    
    //Slide Chatlist panel to the left
    X.chatList().style.transition= "left 0.25s ease-in-out";
@@ -530,20 +522,6 @@ function inchatcontactandgroupinfo(){
       X.contactInfo().style.pointerEvents="none";
   }
 }
-
-//-----------------------------------------------------------------------------
-//                           Clean
-//----------------------------------------------------------------------------
-
-// function clean() {
-//   navigator.serviceWorker.getRegistrations().then(function(registrations) {
-//   for(let registration of registrations) {
-//           registration.unregister()
-//   }}).catch(function(err) {
-//       console.log('Service Worker registration failed: ', err);
-//   });
-// }
-
 
 //-----------------------------------------------------------------------
 //                     End of main thing
