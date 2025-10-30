@@ -20,7 +20,19 @@ Page {
                         }
                     }
                 ]
-    }    
+    }  
+    
+
+    // --- Image de fond ---
+    Image {
+        id: imageBackground
+        source: Qt.resolvedUrl("Backgrounds/screensaver-black.png")  // ton image de fond
+        anchors.centerIn: parent
+        width: parent.width
+        height: parent.height
+        fillMode: Image.PreserveAspectCrop
+    }
+    
   Settings {
         id: config
         category: "AppSettings"
@@ -42,11 +54,6 @@ Page {
         property bool enableGpu: true
     }
         
-        // Background
-            Rectangle {
-                anchors.fill: parent
-                color: "#ffffff"
-            }
  
 
     Flickable {
@@ -63,6 +70,59 @@ Page {
             spacing: units.gu(2)
             padding: units.gu(1)
             //anchors { fill: parent}
+            
+             // --- Warning Sections --
+
+                    // Warning 1
+                    Row {
+                        width: parent ? parent.width : units.gu(40)
+                        anchors.horizontalCenter: parent ? parent.horizontalCenter : undefined
+                        leftPadding: units.gu(2)
+                        height: Math.max(imgWarning1.height, labelWarning1.implicitHeight) + units.gu(1)
+                        spacing: units.gu(1)
+                        Image {
+                            source: "Icons/warning.png"
+                            width: units.gu(3)
+                            height: units.gu(3)
+                            fillMode: Image.PreserveAspectFit
+                            id:imgWarning1
+                        }
+                        Label {
+                            text: "Warning: changing the following parameters may prevent the app from working correctly. Only modify if you understand what you're doing. You can always go back to default parameters."
+                            wrapMode: Text.Wrap
+                            font.bold: true
+                            color: "orange"
+                            width: parent.width - units.gu(7)
+                            id:labelWarning1
+                        }
+                    }
+
+                    // Warning 2
+                    Row {
+                        height: Math.max(imgWarning2.height, labelWarning2.implicitHeight) + units.gu(1)
+                        width: parent ? parent.width : units.gu(40)
+                        anchors.horizontalCenter: parent ? parent.horizontalCenter : undefined
+                        leftPadding: units.gu(2)
+                        spacing: units.gu(1)
+                        Image {
+                            source: "Icons/warning.png"
+                            width: units.gu(3)
+                            height: units.gu(3)
+                            fillMode: Image.PreserveAspectFit
+                            id:imgWarning2
+                        }
+                        Label {
+                            text: "Warning: parameters will only be applied after restarting the app"
+                            wrapMode: Text.Wrap
+                            font.bold: true
+                            color: "orange"
+                            width: parent.width - units.gu(7)
+                            id:labelWarning2
+                        }
+                    }
+                
+
+    
             Row{
             Button {
             text: i18n.tr("Reset to default values")
@@ -101,7 +161,7 @@ Page {
             // --- Scaling ---
             Label { text: "Scaling"; font.bold: true; fontSize: "large"; color: UbuntuColors.orange }
             SliderRow { id:webviewWidthPortait; text: "Webview width (portrait)"; value: config.webviewWidthPortait; onValueChanged: config.webviewWidthPortait = value }
-            SliderRow { id:webviewWidthLandscape; text: "Webview width (landscape)"; value: config.webviewWidthLandscape; onValueChanged: config.webviewWidthLandscape = value }
+            SliderRow { id:webviewWidthLandscape; text: "Webview width (landsca.)"; value: config.webviewWidthLandscape; onValueChanged: config.webviewWidthLandscape = value }
             SliderRow { id:textFontSize; text: "Text fontsize (%)"; value: config.textFontSize; onValueChanged: config.textFontSize = value }
             SliderRow { id:spanFontSize; text: "Span fontsize (%)"; value: config.spanFontSize; onValueChanged: config.spanFontSize = value }
 

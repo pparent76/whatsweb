@@ -13,7 +13,7 @@ Row {
         id: label
         text: "Option"
         wrapMode: Text.Wrap
-        color: "#000000"
+        color: "#ffffff"
     }
     Switch {
         id:switcher

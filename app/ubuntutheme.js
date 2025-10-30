@@ -60,6 +60,8 @@ var copiedMessage1;
 var copiedMessage2;
 
 document.addEventListener("touchend", () => {
+  if (window.appConfig.enableQuickCopy)
+  {
   const selection = window.getSelection();
   const selectedText = selection.toString().trim();
   if (selectedText.length > 0) {
@@ -85,19 +87,24 @@ document.addEventListener("touchend", () => {
           selection.removeAllRanges();
     }
   }
-
-  
+  }
 });
    
 window.addEventListener("click", function() {
-  //Handle events for Quick Copy to ClipBoard
-  const selection = window.getSelection();
-  const selectedText = selection.toString().trim();
-  if (selectedText.length == 0) {
+  if (window.appConfig.enableQuickCopy)
+  {
+  setTimeout(function() {
+    // Handle events for Quick Copy to Clipboard
+    const selection = window.getSelection();
+    const selectedText = selection.toString().trim();
+
+    if (selectedText.length === 0) {
       if (copiedMessage1) copiedMessage1 = null;
       else copiedMessage2 = null;
-  } 
-},800);
+    }
+  }, 800); // délai en millisecondes
+  }
+});
     
 // Declare variables
 updatenotificacion = 0;
@@ -183,8 +190,8 @@ function main(){
   //Adapt fontsize
   addCss(".customDialog { transform: scaleX(0.8) scaleY(0.8) !important; transition: transform 0.3s ease !important; }");    
   addCss(".emojiDialog { transform: scaleX(0.7) scaleY(0.7) !important; transition: transform 0.3s ease !important; transformOrigin = left bottom !important; left:2% !important; }");     
-  addCss("span { font-size: 104% !important; }");    
-  addCss(".selectable-text { font-size: 110% !important; }");  
+  addCss("span { font-size: "+window.appConfig.spanFontSize+"% !important; }");    
+  addCss(".selectable-text { font-size: "+window.appConfig.textFontSize+"% !important; }");  
   addCss(".message-out {  padding-right: 20px !important; }");
   addCss(".message-in {  padding-left: 20px !important; }");  
   

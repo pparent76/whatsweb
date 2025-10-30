@@ -5,8 +5,8 @@ Row {
     id: root
     property string text: "Option"
     property int value 
-    property int minimumValue: 0
-    property int maximumValue: 1000
+    property int minimumValue: 50
+    property int maximumValue: 5000
     property int stepSize: 1
 
     width: parent ? parent.width : units.gu(40)
@@ -19,7 +19,7 @@ Row {
         text: root.text
         width: units.gu(20)
         verticalAlignment: Text.AlignVCenter
-        color: "#000000"
+        color: "#ffffff"
     }
 
     Button {
@@ -38,7 +38,15 @@ Row {
         width: units.gu(8)
         horizontalAlignment: Text.AlignHCenter
         verticalAlignment: Text.AlignVCenter
-        color: "#000000"
+        color: "#ffffff"
+        Keys.onReturnPressed: {
+        event.accepted = true   // empêche l’ajout d’un saut de ligne
+        focus = false           // déselectionne le TextEdit
+        }
+        onFocusChanged: {
+            if (parseInt(text)>root.minimumValue && parseInt(text)<root.maximumValue)
+                    value=parseInt(text)
+        }
     }
 
     Button {

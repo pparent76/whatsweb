@@ -1,7 +1,7 @@
 [Desktop Entry]
 Name=WhatsWeb
 Comment=Whatsapp with Responsive
-Exec=qmlscene %u -I qml-plugins/ app/Main.qml  --scaling --multisample --gles 
+Exec=./launcher.sh
 Terminal=false
 Type=Application
 Icon=icon.png

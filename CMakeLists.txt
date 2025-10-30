@@ -23,4 +23,5 @@ install(FILES whatsweb-push-helper.json DESTINATION ${CMAKE_INSTALL_PREFIX})
 install(FILES whatsweb-push.apparmor DESTINATION ${CMAKE_INSTALL_PREFIX})
 install(FILES push-apparmor.json DESTINATION ${CMAKE_INSTALL_PREFIX})
 install(FILES content-hub.json DESTINATION ${CMAKE_INSTALL_PREFIX})
+install(PROGRAMS launcher.sh DESTINATION ${CMAKE_INSTALL_PREFIX})
 

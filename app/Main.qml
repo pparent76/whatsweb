@@ -130,6 +130,16 @@ MainView {
        url: "https://web.whatsapp.com"
         userScripts: [
           WebEngineScript {
+                name: "AppConfig"
+                injectionPoint: WebEngineScript.DocumentCreation
+                worldId: WebEngineScript.MainWorld
+                sourceCode: "window.appConfig = " + JSON.stringify({
+                    textFontSize: config.textFontSize,
+                    spanFontSize: config.spanFontSize,
+                    enableQuickCopy: config.enableQuickCopy
+                }) + ";"
+            },
+          WebEngineScript {
             injectionPoint: WebEngineScript.DocumentCreation
             worldId: WebEngineScript.MainWorld
             name: "QWebChannel"
@@ -252,26 +262,10 @@ MainView {
     }
     
     
-      Image {
-            source: "Icons/gear.png"
-            id:settingsButton
-            width: 25
-            height: 25
-            anchors {
-              top: parent.top
-              right: parent.right
-              topMargin: units.gu(1)
-              rightMargin: units.gu(1)
-              }
-            MouseArea {
-                anchors.fill: parent
-                cursorShape: Qt.PointingHandCursor
-                onClicked: {
-                  mainPageStack.push(Qt.resolvedUrl("settingsPage.qml"),{"config":mainView.config})
-                }
-            }
-        }
-
+    SettingButton{
+      id: settingsButton
+      pageStack: mainPageStack
+    }
       
     }
     
