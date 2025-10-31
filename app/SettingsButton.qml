@@ -40,7 +40,7 @@ Item {
                 anchors.fill: parent
                 cursorShape: Qt.PointingHandCursor
                 onClicked: {
-                  mainPageStack.push(Qt.resolvedUrl("SettingPage.qml"),{"config":mainView.config})
+                  mainPageStack.push(Qt.resolvedUrl("SettingsPage.qml"),{"config":mainView.config})
                 }
             }
         } 

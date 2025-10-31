@@ -96,7 +96,7 @@ MainView {
         zoomFactor: mainView.width<mainView.height ? Math.round(100 * mainView.width / config.webviewWidthPortait ) / 100 : Math.round(100 * mainView.width / config.webviewWidthLandscape ) / 100
         
         onKeyboardSizeChanged: {
-        // Échapper correctement les quotes si nécessaire
+        //Don't hide the text edit with keyboard
         var realKeyboardSize=keyboardSize/zoomFactor
         const jsCode = `document.querySelector('footer').style.paddingBottom = "${realKeyboardSize}px"`;
         webview.runJavaScript(jsCode);
@@ -117,6 +117,7 @@ MainView {
           
           onDownloadRequested: {
               //Not working for now in Qt5
+              //Using Download Helper instead
           }
         
         }//End WebEngineProfile
@@ -262,7 +263,7 @@ MainView {
     }
     
     
-    SettingButton{
+    SettingsButton{
       id: settingsButton
       pageStack: mainPageStack
     }

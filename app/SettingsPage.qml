@@ -160,10 +160,10 @@ Page {
             }
             // --- Scaling ---
             Label { text: i18n.tr("Scaling"); font.bold: true; fontSize: "large"; color: UbuntuColors.orange }
-            SliderRow { id:webviewWidthPortait; text: i18n.tr("Webview width (portrait)"); value: config.webviewWidthPortait; onValueChanged: config.webviewWidthPortait = value }
-            SliderRow { id:webviewWidthLandscape; text: i18n.tr("Webview width (landsca.)"); value: config.webviewWidthLandscape; onValueChanged: config.webviewWidthLandscape = value }
-            SliderRow { id:textFontSize; text: i18n.tr("Text fontsize (%)"); value: config.textFontSize; onValueChanged: config.textFontSize = value }
-            SliderRow { id:spanFontSize; text: i18n.tr("Span fontsize (%)"); value: config.spanFontSize; onValueChanged: config.spanFontSize = value }
+            NumberEditRow { id:webviewWidthPortait; text: i18n.tr("Webview width (portrait)"); value: config.webviewWidthPortait; onValueChanged: config.webviewWidthPortait = value }
+            NumberEditRow { id:webviewWidthLandscape; text: i18n.tr("Webview width (landsca.)"); value: config.webviewWidthLandscape; onValueChanged: config.webviewWidthLandscape = value }
+            NumberEditRow { id:textFontSize; text: i18n.tr("Text fontsize (%)"); value: config.textFontSize; onValueChanged: config.textFontSize = value }
+            NumberEditRow { id:spanFontSize; text: i18n.tr("Span fontsize (%)"); value: config.spanFontSize; onValueChanged: config.spanFontSize = value }
 
             // --- Notifications ---
             Label { text: i18n.tr("Notifications"); font.bold: true; fontSize: "large"; color: UbuntuColors.orange }

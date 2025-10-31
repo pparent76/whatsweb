@@ -34,18 +34,23 @@ Row {
     }
 
     TextEdit {
+        id:textEdit1
         text: root.value.toString()
         width: units.gu(8)
         horizontalAlignment: Text.AlignHCenter
         verticalAlignment: Text.AlignVCenter
         color: "#ffffff"
         Keys.onReturnPressed: {
+        if (parseInt(text)>root.minimumValue && parseInt(text)<root.maximumValue)
+                value=parseInt(text)
+        root.valueChanged(root.value)
         event.accepted = true   // empêche l’ajout d’un saut de ligne
         focus = false           // déselectionne le TextEdit
         }
         onFocusChanged: {
             if (parseInt(text)>root.minimumValue && parseInt(text)<root.maximumValue)
                     value=parseInt(text)
+            root.valueChanged(root.value)
         }
     }
 
