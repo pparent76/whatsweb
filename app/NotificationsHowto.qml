@@ -44,7 +44,7 @@ Item {
 
         // Texte en gras
         Text {
-            text: "This application supports notifications."
+            text: i18n.tr("This application supports notifications.")
             font.pixelSize: 14
             font.bold: false
             color: "#666666"   // gris intermédiaire visible sur clair et sombre
@@ -54,7 +54,7 @@ Item {
         }
 
         Label {
-            text: "Show me how!"
+            text: i18n.tr("Show me how!")
             font.pixelSize: 14
             color: "#37a5e8"  // Couleur bleu typique des liens
             anchors.horizontalCenter: parent.horizontalCenter
@@ -83,7 +83,7 @@ Item {
                                 leadingActionBar.actions: [
                                 Action {
                                 iconName: "back"
-                                text: "Retour"
+                                text: i18n.tr("Back")
                                 onTriggered: {
                                     parent.pageStack.pop()
                                     }

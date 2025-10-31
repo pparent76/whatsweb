@@ -14,7 +14,7 @@ Page {
                 [
                     Action {
                     iconName: "back"
-                    text: "Retour"
+                    text: i18n.tr("Back")
                     onTriggered: {
                         parent.pageStack.pop()
                         }
@@ -88,7 +88,7 @@ Page {
                             id:imgWarning1
                         }
                         Label {
-                            text: "Warning: changing the following parameters may prevent the app from working correctly. Only modify if you understand what you're doing. You can always go back to default parameters."
+                            text: i18n.tr("Warning: changing the following parameters may prevent the app from working correctly. Only modify if you understand what you're doing. You can always go back to default parameters.")
                             wrapMode: Text.Wrap
                             font.bold: true
                             color: "orange"
@@ -112,7 +112,7 @@ Page {
                             id:imgWarning2
                         }
                         Label {
-                            text: "Warning: parameters will only be applied after restarting the app"
+                            text: i18n.tr("Warning: parameters will only be applied after restarting the app")
                             wrapMode: Text.Wrap
                             font.bold: true
                             color: "orange"
@@ -159,28 +159,28 @@ Page {
                 
             }
             // --- Scaling ---
-            Label { text: "Scaling"; font.bold: true; fontSize: "large"; color: UbuntuColors.orange }
-            SliderRow { id:webviewWidthPortait; text: "Webview width (portrait)"; value: config.webviewWidthPortait; onValueChanged: config.webviewWidthPortait = value }
-            SliderRow { id:webviewWidthLandscape; text: "Webview width (landsca.)"; value: config.webviewWidthLandscape; onValueChanged: config.webviewWidthLandscape = value }
-            SliderRow { id:textFontSize; text: "Text fontsize (%)"; value: config.textFontSize; onValueChanged: config.textFontSize = value }
-            SliderRow { id:spanFontSize; text: "Span fontsize (%)"; value: config.spanFontSize; onValueChanged: config.spanFontSize = value }
+            Label { text: i18n.tr("Scaling"); font.bold: true; fontSize: "large"; color: UbuntuColors.orange }
+            SliderRow { id:webviewWidthPortait; text: i18n.tr("Webview width (portrait)"); value: config.webviewWidthPortait; onValueChanged: config.webviewWidthPortait = value }
+            SliderRow { id:webviewWidthLandscape; text: i18n.tr("Webview width (landsca.)"); value: config.webviewWidthLandscape; onValueChanged: config.webviewWidthLandscape = value }
+            SliderRow { id:textFontSize; text: i18n.tr("Text fontsize (%)"); value: config.textFontSize; onValueChanged: config.textFontSize = value }
+            SliderRow { id:spanFontSize; text: i18n.tr("Span fontsize (%)"); value: config.spanFontSize; onValueChanged: config.spanFontSize = value }
 
             // --- Notifications ---
-            Label { text: "Notifications"; font.bold: true; fontSize: "large"; color: UbuntuColors.orange }
-            SwitchRow {  id:enableDesktopNotifications; text: "Enable notifications from desktop not."; checked: config.enableDesktopNotifications; onCheckedChanged: config.enableDesktopNotifications = checked }
-            SwitchRow { id:enableTitleChangeNotifications; text: "Enable notifications from title change"; checked: config.enableTitleChangeNotifications; onCheckedChanged: config.enableTitleChangeNotifications = checked }
-            SwitchRow { id:enableSoundNotifications; text: "Enable notifications from sound event"; checked: config.enableSoundNotifications; onCheckedChanged: config.enableSoundNotifications = checked }
-            SwitchRow { id:enableNotificationCounter; text: "Enable notification counter"; checked: config.enableNotificationCounter; onCheckedChanged: config.enableNotificationCounter = checked }
+            Label { text: i18n.tr("Notifications"); font.bold: true; fontSize: "large"; color: UbuntuColors.orange }
+            SwitchRow {  id:enableDesktopNotifications; text: i18n.tr("Enable notifications from desktop not."); checked: config.enableDesktopNotifications; onCheckedChanged: config.enableDesktopNotifications = checked }
+            SwitchRow { id:enableTitleChangeNotifications; text: i18n.tr("Enable notifications from title change"); checked: config.enableTitleChangeNotifications; onCheckedChanged: config.enableTitleChangeNotifications = checked }
+            SwitchRow { id:enableSoundNotifications; text: i18n.tr("Enable notifications from sound event"); checked: config.enableSoundNotifications; onCheckedChanged: config.enableSoundNotifications = checked }
+            SwitchRow { id:enableNotificationCounter; text: i18n.tr("Enable notification counter"); checked: config.enableNotificationCounter; onCheckedChanged: config.enableNotificationCounter = checked }
 
             // --- Background behaviour ---
-            Label { text: "Background behaviour"; font.bold: true; fontSize: "large"; color: UbuntuColors.orange }
-            SwitchRow { id:enableScreensaver; text: "Enable screensaver"; checked: config.enableScreensaver; onCheckedChanged: config.enableScreensaver = checked }
-            SwitchRow {id:disableBackgroundAudio; text: "Disable background audio"; checked: config.disableBackgroundAudio; onCheckedChanged: config.disableBackgroundAudio = checked }
+            Label { text: i18n.tr("Background behaviour"); font.bold: true; fontSize: "large"; color: UbuntuColors.orange }
+            SwitchRow { id:enableScreensaver; text: i18n.tr("Enable screensaver"); checked: config.enableScreensaver; onCheckedChanged: config.enableScreensaver = checked }
+            SwitchRow {id:disableBackgroundAudio; text: i18n.tr("Disable background audio"); checked: config.disableBackgroundAudio; onCheckedChanged: config.disableBackgroundAudio = checked }
 
             // --- Tweaking ---
-            Label { text: "Tweaking"; font.bold: true; fontSize: "large"; color: UbuntuColors.orange }
-            SwitchRow { id:enableQuickCopy; text: "Enable quick copy to clipboard"; checked: config.enableQuickCopy; onCheckedChanged: config.enableQuickCopy = checked }
-            SwitchRow {id:enableGpu;  text: "Enable GPU"; checked: config.enableGpu; onCheckedChanged: config.enableGpu = checked }
+            Label { text: i18n.tr("Tweaking"); font.bold: true; fontSize: "large"; color: UbuntuColors.orange }
+            SwitchRow { id:enableQuickCopy; text: i18n.tr("Enable quick copy to clipboard"); checked: config.enableQuickCopy; onCheckedChanged: config.enableQuickCopy = checked }
+            SwitchRow {id:enableGpu;  text: i18n.tr("Enable GPU"); checked: config.enableGpu; onCheckedChanged: config.enableGpu = checked }
         }
        }
 }

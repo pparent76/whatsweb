@@ -1,10 +1,10 @@
 #!/bin/sh
 
-enableGPU=false;
+enableGPU=true;
 
 while read p; do
-  if [ "$p" = "enableGpu=true" ]; then
-  enableGPU="true";
+  if [ "$p" = "enableGpu=false" ]; then
+  enableGPU="false";
   fi
 done < /home/phablet/.config/whatsweb.pparent/whatsweb.pparent.conf
 
