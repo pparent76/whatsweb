@@ -128,7 +128,9 @@ function main(){
   X.overlayMenus().style.width="0";
   showchatlist();  
   X.chatList().style.minWidth = "100%"
-  X.chatWindow().style.minWidth = "100%"  
+  X.chatWindow().style.minWidth = "100%" 
+  X.chatWindow().style.maxWidth = "100%"  
+  X.chatWindow().style.width = "100%"   
    X.mainWrapper().style.minWidth = 'auto';
    X.mainWrapper().style.minHeight = 'auto';
    
@@ -168,11 +170,17 @@ function main(){
   //SECTION2.3 Open left panel when changes are detected in it
   //------------------------------------------------------------
   if (X.leftSettingPannel()) {
+    setTimeout( () => {
     const observer = new MutationObserver((mutationsList) => {
-          if ( X.leftMenu().style.display == 'none' && X.chatList().style.left != "-100%" )
+          if ( X.leftMenu().style.display == 'none' && X.chatList().style.left != "-100%" 
+            && !(lastClickEl != null &&  X.isAPossibleChatOpener(lastClickEl) &&  ! X.app().contains(lastClickEl)  )  )
+          {
+              console.log("toggle menu")
               toggleLeftMenu();
+          }
     });
     observer.observe(X.leftSettingPannel(), { childList: true, subtree: true });
+    },35)
   }
   
   
@@ -309,6 +317,9 @@ function showchatWindow(){
    
    X.chatWindow().style.position=""
    X.chatWindow().style.left=""
+   X.chatWindow().style.minWidth = "100%" 
+   X.chatWindow().style.maxWidth = "100%"  
+   X.chatWindow().style.width = "100%"
    
    //Slide Chatlist panel to the left
    X.chatList().style.transition= "left 0.25s ease-in-out";
