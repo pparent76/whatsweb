@@ -101,12 +101,12 @@ const X = {
   
   //-----------------------------------------------------------------------------------------
   isInCommunityPannel: () => (document.querySelector("[role=navigation]") != null),
-  isElementInChatlist: (el) => el.closest('[role="grid"]'),
+  isElementInChatlist: (el) => ( el.closest('[role="grid"]')!= null ),
   isElementChatOpenerInCommunityPanel: (el) => X.leftSettingPannel().contains(lastClickEl) && lastClickEl.closest('[role="listitem"]') && lastClickEl.closest('[role="listitem"]').querySelector("[title]"),
-  isAPossibleChatOpener: (el)=> el.closest("[role=listitem]")
+  isAPossibleChatOpener: (el) => (el.closest("[role=listitem]") != null)
 };
 
-//------------------------------------------------------------------------------------------------
+//----------------------------------------------s--------------------------------------------------
 //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
 // SECTION2:   Main() function that is called when it is detected that the main view has loaded
 //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
