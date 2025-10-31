@@ -147,6 +147,11 @@ function main(){
       lastFocusEl.classList.add('contenteditableDisabled');
     }
     
+    if (X.chatWindow().contains(lastFocusEl))
+    {
+      calculateSecondaryChatwindowOpen();
+    }
+    
   });
 
   addLeftMenuButtonToChatList();
@@ -239,7 +244,23 @@ window.addEventListener("click", function() {
         showchatWindow();
   
   setTimeout( () => {
-    
+
+  calculateSecondaryChatwindowOpen();
+  
+  //(Re)-enable content Editable ( If it was disabled when "OnFocus" was called without click)
+  if ( lastClickEl.closest('.contenteditableDisabled')  )
+  {
+    lastClickEl.closest('.contenteditableDisabled').setAttribute('contenteditable', true);
+    lastClickEl.closest('.contenteditableDisabled').classList.remove('contenteditableDisabled') 
+  }
+  needToShowChatWindow=0;
+  },5);
+  
+}); 
+
+
+function calculateSecondaryChatwindowOpen()
+{
   if ( X.isInCommunityPannel() )
   {
   //Special detect for in-community Panel
@@ -270,17 +291,7 @@ window.addEventListener("click", function() {
     }
       
   }
-  
-  //(Re)-enable content Editable ( If it was disabled when "OnFocus" was called without click)
-  if ( lastClickEl.closest('.contenteditableDisabled')  )
-  {
-    lastClickEl.closest('.contenteditableDisabled').setAttribute('contenteditable', true);
-    lastClickEl.closest('.contenteditableDisabled').classList.remove('contenteditableDisabled') 
-  }
-  needToShowChatWindow=0;
-  },5);
-  
-}); 
+}
 
 window.addEventListener("click", function() {
   //Backup Back button
