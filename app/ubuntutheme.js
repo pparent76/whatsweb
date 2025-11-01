@@ -149,7 +149,7 @@ function main(){
     
     if (X.chatWindow().contains(lastFocusEl))
     {
-      calculateSecondaryChatwindowOpen();
+      calculateSecondaryChatWindowOpen();
     }
     
   });
@@ -245,7 +245,7 @@ window.addEventListener("click", function() {
   
   setTimeout( () => {
 
-  calculateSecondaryChatwindowOpen();
+  calculateSecondaryChatWindowOpen();
   
   //(Re)-enable content Editable ( If it was disabled when "OnFocus" was called without click)
   if ( lastClickEl.closest('.contenteditableDisabled')  )
@@ -255,11 +255,10 @@ window.addEventListener("click", function() {
   }
   needToShowChatWindow=0;
   },5);
-  
 }); 
 
 
-function calculateSecondaryChatwindowOpen()
+function calculateSecondaryChatWindowOpen()
 {
   if ( X.isInCommunityPannel() )
   {
@@ -278,26 +277,23 @@ function calculateSecondaryChatwindowOpen()
         //We have clicked on an element of left window
         showchatWindow();
         }
-        else
+        //If we have a click on an orpheline listitem proceed as well
+        else if ( ! X.app().contains(lastClickEl) && X.isAPossibleChatOpener(lastClickEl) )
         {
-          //The leftmenu is open and we have click on an orpheline listitem  -> proceed and open the chatWindow
-          if ( ! X.app().contains(lastClickEl) 
-            && X.isAPossibleChatOpener(lastClickEl) 
-          )
-          {
           showchatWindow();
-          }
         }
     }
-      
   }
 }
 
 window.addEventListener("click", function() {
-  //Backup Back button
   setTimeout( () => {
   backupBackButton();
   },400);
+  //Backup Back button
+  setTimeout( () => {
+  backupBackButton();
+  },4000);
 })
 
 //---------------------------------------------------------------------
