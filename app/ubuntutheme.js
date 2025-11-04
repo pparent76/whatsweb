@@ -63,19 +63,19 @@ const X = {
   
   //MainWrapper stuff (element class two)----------------------------------------------------
   mainWrapper: () => document.querySelector('.two'),  
-    unkownSection1: () => document.querySelector('.two').childNodes[1],
-      unkownSection2: () => document.querySelector('.two').childNodes[1].childNodes[0],  
-    overlayMenus: () => document.querySelector('.two').childNodes[2],
-      uploadPannel: () => document.querySelector('.two').childNodes[2].childNodes[1], //(to upload photos/videos/document)    
-      leftSettingPannel: () => document.querySelector('.two').childNodes[2].childNodes[0], // leftMenus (Settings, status, community, profile, ...)
-    chatList: () => document.querySelector('.two').childNodes[3],
-      chatListHeader: () => document.querySelector('.two').childNodes[3].querySelector('header').querySelector('header'),
-    chatWindow: () => document.querySelector('.two').childNodes[4],
-      chatHeader: () => document.querySelector('.two').childNodes[4].querySelector('header'),
+    unkownSection1: () => document.querySelector('.two').childNodes[2],
+      unkownSection2: () => document.querySelector('.two').childNodes[2].childNodes[0],  
+    overlayMenus: () => document.querySelector('.two').childNodes[3],
+      uploadPannel: () => document.querySelector('.two').childNodes[3].childNodes[1], //(to upload photos/videos/document)    
+      leftSettingPannel: () => document.querySelector('.two').childNodes[3].childNodes[0], // leftMenus (Settings, status, community, profile, ...)
+    chatList: () => document.querySelector('.two').childNodes[4],
+      chatListHeader: () => document.querySelector('.two').childNodes[4].querySelector('header').querySelector('header'),
+    chatWindow: () => document.querySelector('.two').childNodes[5],
+      chatHeader: () => document.querySelector('.two').childNodes[5].querySelector('header'),
   //-------------------------------------------------------------------------------------------
 
   upperWrapper: () => document.querySelector('.three'),
-    contactInfo: () => document.querySelector('.three').childNodes[5],
+    contactInfo: () => document.querySelector('.two').childNodes[6],
       
   leftMenu: () => document.querySelector('header'),
 
@@ -133,7 +133,8 @@ function main(){
   X.chatWindow().style.width = "100%"   
    X.mainWrapper().style.minWidth = 'auto';
    X.mainWrapper().style.minHeight = 'auto';
-   
+      X.unkownSection1().style.borderInlineStartWidth = "0" ;
+      
    //--------------------------------------------------------------
    // SECTION2.1 Avoid opening the keyboard when entering a chat
   //              by listening to focusin
