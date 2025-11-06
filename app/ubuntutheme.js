@@ -121,7 +121,8 @@ function main(){
         addCss(".message-out {  padding-right: 20px !important; }");
         addCss(".message-in {  padding-left: 20px !important; }");  
         addCss("span { font-size: "+window.appConfig.spanFontSize+"% !important; }");    
-        addCss(".selectable-text { font-size: "+window.appConfig.textFontSize+"% !important; }"); 
+        addCss(".copyable-text { font-size: "+window.appConfig.textFontSize+"% !important; }");         
+        addCss(".html-span { font-size: 96% !important; }");
     } catch (e) { console.log("Error while applying css: "+e) }
 
   
